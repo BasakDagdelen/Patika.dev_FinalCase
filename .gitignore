@@ -1,0 +1,49 @@
+# Build results
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# NuGet
+*.nupkg
+.nuget/
+
+# Configuration
+appsettings.Development.json
+secrets.json
+
+# Entity Framework Migrations history
+Migrations/
+
+# Test results
+TestResults/
+
+# Others
+*.db
+*.sqlite
+*.pdb
+*.cache
+*.tmp
+
+# ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# IIS
+.vs/
