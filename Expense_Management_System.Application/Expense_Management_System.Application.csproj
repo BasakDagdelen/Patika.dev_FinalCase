@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Expense_Management_System.Domain\Expense_Management_System.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
 </Project>
