@@ -1,9 +1,9 @@
-﻿using Expense_Management_System.Application.DTOs.Requests;
+﻿using Expense_Management_System.Application.DTOs.entitys;
 using FluentValidation;
 
 namespace Expense_Management_System.Application.Validation;
 
-public class PaymentValidator: AbstractValidator<PaymentRequest>
+public class PaymentValidator: AbstractValidator<PaymenTEntity>
 {
     public PaymentValidator()
     {

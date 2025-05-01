@@ -1,4 +1,4 @@
-﻿using Expense_Management_System.Application.DTOs.Requests;
+﻿using Expense_Management_System.Application.DTOs.entitys;
 using Expense_Management_System.Domain.Models.Entities;
 using FluentValidation;
 using System;
@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace Expense_Management_System.Application.Validation;
 
-public class UserValidator: AbstractValidator<UserRequest>
+public class UserValidator: AbstractValidator<Userentity>
 {
     public UserValidator()
     {

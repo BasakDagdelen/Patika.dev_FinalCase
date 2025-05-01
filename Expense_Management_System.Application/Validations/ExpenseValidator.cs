@@ -1,4 +1,4 @@
-﻿using Expense_Management_System.Application.DTOs.Requests;
+﻿using Expense_Management_System.Application.DTOs.entitys;
 using Expense_Management_System.Domain.Models.Enums;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.Validation;
 
-public class ExpenseValidator : AbstractValidator<ExpenseRequest>
+public class ExpenseValidator : AbstractValidator<Expenseentity>
 {
     public ExpenseValidator()
     {
@@ -41,7 +41,7 @@ public class ExpenseValidator : AbstractValidator<ExpenseRequest>
 
     }
 
-    private bool AllFilesAreValidTypes(List<ExpenseDocumentRequest> documents)
+    private bool AllFilesAreValidTypes(List<ExpenseDocumenTEntity> documents)
     {
         var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
         return documents.All(doc =>
@@ -51,7 +51,7 @@ public class ExpenseValidator : AbstractValidator<ExpenseRequest>
         });
     }
 
-    private bool AllFilesAreUnderSizeLimit(List<ExpenseDocumentRequest> documents)
+    private bool AllFilesAreUnderSizeLimit(List<ExpenseDocumenTEntity> documents)
     {
         const long maxFileSizeInBytes = 5 * 1024 * 1024;
         return documents.All(doc => doc.File.Length <= maxFileSizeInBytes);

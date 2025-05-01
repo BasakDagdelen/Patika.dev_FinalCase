@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Expense_Management_System.Application.DTOs.Requests;
+namespace Expense_Management_System.Application.DTOs.entitys;
 
-public class PaymentRequest: BaseRequest
+public class PaymenTEntity: Baseentity
 {
     public Guid ExpenseClaimId { get; set; }
     public decimal Amount { get; set; }

@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Expense_Management_System.Application.DTOs.Requests;
+namespace Expense_Management_System.Application.DTOs.entitys;
 
-public class ExpenseRequest: BaseRequest
+public class Expenseentity: Baseentity
 {
     public Guid UserId { get; set; }
     public Guid ExpenseCategoryId { get; set; }
@@ -17,5 +17,5 @@ public class ExpenseRequest: BaseRequest
     public string PaymentLocation { get; set; }
     public string? Description { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
-    public List<ExpenseDocumentRequest> Documents { get; set; } = new();
+    public List<ExpenseDocumenTEntity> Documents { get; set; } = new();
 }

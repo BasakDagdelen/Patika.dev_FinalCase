@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.DTOs.Responses;
 
-public class PaymentResponse: BaseResponse
+public class PaymenTEntity: BaseResponse
 {
     public Guid UserId { get; set; }
     public string UserFullName { get; set; }

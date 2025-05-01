@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Expense_Management_System.Application.DTOs.Requests;
+namespace Expense_Management_System.Application.DTOs.entitys;
 
-public class UserRequest: BaseRequest
+public class Userentity: Baseentity
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

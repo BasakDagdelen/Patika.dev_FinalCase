@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Expense_Management_System.Application.DTOs.Requests;
+namespace Expense_Management_System.Application.DTOs.entitys;
 
-public class ExpenseDocumentRequest: BaseRequest
+public class ExpenseDocumenTEntity: Baseentity
 {
     public IFormFile File { get; set; }
 }

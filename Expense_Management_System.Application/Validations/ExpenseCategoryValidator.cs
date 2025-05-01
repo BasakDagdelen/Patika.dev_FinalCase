@@ -1,4 +1,4 @@
-﻿using Expense_Management_System.Application.DTOs.Requests;
+﻿using Expense_Management_System.Application.DTOs.entitys;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.Validation;
 
-public class ExpenseCategoryValidator: AbstractValidator<ExpenseCategoryRequest>
+public class ExpenseCategoryValidator: AbstractValidator<ExpenseCategoryentity>
 {
     public ExpenseCategoryValidator()
     {
