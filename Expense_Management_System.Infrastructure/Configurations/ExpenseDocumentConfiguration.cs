@@ -1,4 +1,4 @@
-﻿using Expense_Management_System.Domain.Models.Entities;
+﻿using Expense_Management_System.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

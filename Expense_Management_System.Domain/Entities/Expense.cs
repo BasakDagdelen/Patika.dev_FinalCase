@@ -1,5 +1,5 @@
-﻿using Expense_Management_System.Domain.Models.Common;
-using Expense_Management_System.Domain.Models.Enums;
+﻿using Expense_Management_System.Domain.Common;
+using Expense_Management_System.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Expense_Management_System.Domain.Models.Entities;
+namespace Expense_Management_System.Domain.Entities;
 
 public class Expense : BaseEntity
 {

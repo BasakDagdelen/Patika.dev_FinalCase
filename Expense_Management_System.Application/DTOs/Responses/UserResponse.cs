@@ -1,6 +1,6 @@
 ﻿using Expense_Management_System.Application.DTOs.Common;
+using Expense_Management_System.Domain.Enums;
 using Expense_Management_System.Domain.Models.Entities;
-using Expense_Management_System.Domain.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

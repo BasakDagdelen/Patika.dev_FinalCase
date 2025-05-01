@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Expense_Management_System.Domain.Models.Common;
+namespace Expense_Management_System.Domain.Common;
 
 public abstract class BaseEntity
 {

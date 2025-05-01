@@ -1,4 +1,5 @@
-﻿using Expense_Management_System.Domain.Models.Entities;
+﻿using Expense_Management_System.Domain.Entities;
+using Expense_Management_System.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -25,12 +26,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.FirstName).IsRequired().HasMaxLength(50);
         builder.Property(x => x.LastName).IsRequired().HasMaxLength(50);
         builder.Property(x => x.Email).IsRequired().HasMaxLength(100);
-        builder.HasIndex(x => x.Email).IsUnique(); 
-        builder.Property(x => x.PasswordHash).IsRequired().HasMaxLength(255); 
+        builder.HasIndex(x => x.Email).IsUnique();
+        builder.Property(x => x.PasswordHash).IsRequired().HasMaxLength(255);
         builder.Property(x => x.PhoneNumber).IsRequired().HasMaxLength(15);
         builder.Property(x => x.WorkPhoneNumber).HasMaxLength(15);
         builder.Property(x => x.Address).IsRequired().HasMaxLength(200);
-        builder.Property(x => x.IBAN).IsRequired().HasMaxLength(34); 
+        builder.Property(x => x.IBAN).IsRequired().HasMaxLength(34);
         builder.Property(x => x.Role).IsRequired();
 
         builder.HasMany(x => x.Expenses)
@@ -42,5 +43,37 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                .WithOne(x => x.User)
                .HasForeignKey(x => x.UserId)
                .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasData(
+            builder.Property(x => x.Id == Guid.NewGuid()),
+            builder.Property(x => x.FirstName == "Ahmet"),
+            builder.Property(x => x.LastName == "Çınar"),
+            builder.Property(x => x.Email == "ahmet_cinar@company.com"),
+            builder.Property(x => x.PasswordHash == "$2a$11$Cm93CrScW2tSjqAo3AcEYO0kgVtZvcqLsPu1smj6/MuKiKuVzOaT2"),// Admin123!
+            builder.Property(x => x.PhoneNumber == "05000000000"),
+            builder.Property(x => x.WorkPhoneNumber == "02120000000"),
+            builder.Property(x => x.Address == "Beşiktaş/İstanbul"),
+            builder.Property(x => x.IBAN == "TR000000000000000000000000"),
+            builder.Property(x => x.Role == UserRole.Admin),
+            builder.Property(x => x.InsertedUser == "system"),
+            builder.Property(x => x.InsertedDate == DateTime.Now),
+            builder.Property(x => x.IsActive == true));
+
+        builder.HasData(
+            builder.Property(x => x.Id == Guid.NewGuid()),
+            builder.Property(x => x.FirstName == "Selma"),
+            builder.Property(x => x.LastName == "Deniz"),
+            builder.Property(x => x.Email == "selma_deniz@company.com"),
+            builder.Property(x => x.PasswordHash == "$2a$11$xNlpsCUq8HrfTFSip5R6HOpNIdfq7fZf6AYqQUwE9ZKDYgsFuE9Fe"),// Employee123!
+            builder.Property(x => x.PhoneNumber == "05001112233"),
+            builder.Property(x => x.WorkPhoneNumber == "02120000123"),
+            builder.Property(x => x.Address == "Kartal/İstanbul"),
+            builder.Property(x => x.IBAN == "TR111111111111111111111111"),
+            builder.Property(x => x.Role == UserRole.Employee),
+            builder.Property(x => x.InsertedUser == "system"),
+            builder.Property(x => x.InsertedDate == DateTime.Now),
+            builder.Property(x => x.IsActive == true));
     }
 }
+
+ 

@@ -1,8 +1,8 @@
 ﻿using System;
-using Expense_Management_System.Domain.Models.Common;
-using Expense_Management_System.Domain.Models.Enums;
+using Expense_Management_System.Domain.Common;
+using Expense_Management_System.Domain.Enums;
 
-namespace Expense_Management_System.Domain.Models.Entities
+namespace Expense_Management_System.Domain.Entities
 {
     public class Payment : BaseEntity
     {
@@ -12,8 +12,8 @@ namespace Expense_Management_System.Domain.Models.Entities
         public DateTime PaymentDate { get; set; }
         public PaymentMethod Method { get; set; }
         public string TransactionReference { get; set; }
-        
-        public  User User { get; set; }
-        public  Expense Expense { get; set; }
+
+        public User User { get; set; }
+        public Expense Expense { get; set; }
     }
 }

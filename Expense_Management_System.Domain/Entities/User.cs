@@ -1,8 +1,8 @@
 ﻿using System;
-using Expense_Management_System.Domain.Models.Common;
-using Expense_Management_System.Domain.Models.Enums;
+using Expense_Management_System.Domain.Common;
+using Expense_Management_System.Domain.Enums;
 
-namespace Expense_Management_System.Domain.Models.Entities
+namespace Expense_Management_System.Domain.Entities
 {
     public class User : BaseEntity
     {

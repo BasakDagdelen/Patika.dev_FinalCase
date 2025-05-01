@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Expense_Management_System.Domain.Models.Entities;
+namespace Expense_Management_System.Domain.Entities;
 
 public class ExpenseReport
 {

@@ -1,5 +1,5 @@
 ﻿using Expense_Management_System.Application.DTOs.Common;
-using Expense_Management_System.Domain.Models.Enums;
+using Expense_Management_System.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
