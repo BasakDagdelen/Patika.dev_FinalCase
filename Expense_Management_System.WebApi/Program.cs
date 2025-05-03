@@ -1,5 +1,9 @@
+using Expense_Management_System.Application.Interfaces.Services;
+using Expense_Management_System.Application.Services;
 using Expense_Management_System.Application.Validation;
+using Expense_Management_System.Domain.Interfaces.Repositories;
 using Expense_Management_System.Infrastructure;
+using Expense_Management_System.Infrastructure.Repositories;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +19,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(config =>
     config.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"),
                         x => x.MigrationsAssembly("Expense_Management_System.Infrastructure"));
 });
+
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped(typeof(IGenericService<,,>), typeof(GenericService<,,>));
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

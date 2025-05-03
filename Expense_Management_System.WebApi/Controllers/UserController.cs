@@ -1,6 +1,11 @@
-﻿namespace Expense_Management_System.WebApi.Controllers
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Expense_Management_System.WebApi.Controllers
 {
-    public class UserController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
     {
     }
 }
