@@ -1,4 +1,5 @@
 ﻿using Expense_Management_System.Application.DTOs.Common;
+using Expense_Management_System.Domain.Common;
 using Expense_Management_System.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -6,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Expense_Management_System.Application.DTOs.entitys;
+namespace Expense_Management_System.Application.DTOs.Requests;
 
-public class Userentity: Baseentity
+public class UserRequest: BaseEntity
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

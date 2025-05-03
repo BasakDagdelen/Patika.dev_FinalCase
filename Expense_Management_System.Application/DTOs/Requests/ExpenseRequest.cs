@@ -1,4 +1,5 @@
 ﻿using Expense_Management_System.Application.DTOs.Common;
+using Expense_Management_System.Domain.Common;
 using Expense_Management_System.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -7,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Expense_Management_System.Application.DTOs.entitys;
+namespace Expense_Management_System.Application.DTOs.Requests;
 
-public class Expenseentity: Baseentity
+public class ExpenseRequest: BaseEntity
 {
     public Guid UserId { get; set; }
     public Guid ExpenseCategoryId { get; set; }
