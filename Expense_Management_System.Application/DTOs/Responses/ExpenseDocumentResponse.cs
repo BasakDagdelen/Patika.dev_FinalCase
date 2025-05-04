@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.DTOs.Responses;
 
-public class ExpenseDocumenTEntity: BaseResponse
+public class ExpenseDocumentResponse: BaseResponse
 {
     public Guid ExpenseClaimId { get; set; }
     public string FileName { get; set; }

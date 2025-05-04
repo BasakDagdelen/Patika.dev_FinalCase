@@ -39,10 +39,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                .HasForeignKey(x => x.UserId)
                .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(x => x.Payments)
-               .WithOne(x => x.User)
-               .HasForeignKey(x => x.UserId)
-               .OnDelete(DeleteBehavior.Restrict);
+        //builder.HasMany(x => x.Payments)
+        //       .WithOne(x => x.User)
+        //       .HasForeignKey(x => x.UserId)
+        //       .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasData(
             builder.Property(x => x.Id == Guid.NewGuid()),
@@ -69,7 +69,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             builder.Property(x => x.WorkPhoneNumber == "02120000123"),
             builder.Property(x => x.Address == "Kartal/İstanbul"),
             builder.Property(x => x.IBAN == "TR111111111111111111111111"),
-            builder.Property(x => x.Role == UserRole.Employee),
+            builder.Property(x => x.Role == UserRole.Personnel),
             builder.Property(x => x.InsertedUser == "system"),
             builder.Property(x => x.InsertedDate == DateTime.Now),
             builder.Property(x => x.IsActive == true));

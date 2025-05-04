@@ -4,67 +4,66 @@ using Expense_Management_System.Application.Interfaces.Services;
 using Expense_Management_System.Domain.Common;
 using Expense_Management_System.Domain.Interfaces.Repositories;
 using Expense_Management_System.Domain.Interfaces.UnitOfWorks;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Expense_Management_System.Application.Services;
 
-public class GenericService<TEntity, TRequest, TResponse> : IGenericService<TRequest, TResponse, TEntity> where TEntity : BaseEntity
+public class GenericService<TEntity> : IGenericService<TEntity> where TEntity : BaseEntity
 {
     private readonly IGenericRepository<TEntity> _repository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    public GenericService(IGenericRepository<TEntity> repository, IMapper mapper, IUnitOfWork unitOfWork)
+
+    public GenericService(IGenericRepository<TEntity> repository, IUnitOfWork unitOfWork)
     {
         _repository = repository;
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<TResponse> AddAsync(TRequest request)
+    public async Task<TEntity> AddAsync(TEntity entity)
     {
-        var entity = _mapper.Map<TEntity>(request);
         await _repository.AddAsync(entity);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<TResponse>(entity);
+        return entity;
     }
 
     public async Task DeleteAsync(Guid id)
     {
         var entity = await _repository.GetByIdAsync(id);
         if (entity is null)
-            throw new Exception("Entity not found.");
-        _repository.Delete(entity);
+            throw new Exception($"Entity with id {id} not found.");
+
+        entity.IsActive = false; // Soft delete
+        _repository.UpdateAsync(entity);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<TResponse>> GetAllAsync()
+    public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        var entities =  _repository.GetAll();
-        return _mapper.Map<IEnumerable<TResponse>>(entities);
+        return await _repository.GetAllAsync();
     }
 
-    public async Task<TResponse> GetByIdAsync(Guid id)
+    public async Task<TEntity> GetByIdAsync(Guid id)
     {
         var entity = await _repository.GetByIdAsync(id);
-        return _mapper.Map<TResponse>(entity);
+        if (entity is null)
+            throw new Exception($"Entity with id {id} not found.");
+
+        return entity;
     }
 
-    public async Task UpdateAsync(Guid id, TRequest request)
+    public async Task UpdateAsync(Guid id, TEntity entity)
     {
-        var entity = await _repository.GetByIdAsync(id);
-        if (entity == null)
-            throw new Exception("Entity not found.");
+        var existingEntity = await _repository.GetByIdAsync(id);
+        if (existingEntity is null)
+            throw new Exception($"Entity with id {id} not found.");
 
-        var updatedEntity = _mapper.Map(request, entity);
-        _repository.Update(updatedEntity);
+        _repository.UpdateAsync(existingEntity);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<TResponse>> WhereAsync(Expression<Func<TEntity, bool>> expression)
+
+    public async Task<IEnumerable<TEntity>> WhereAsync(Expression<Func<TEntity, bool>> expression)
     {
-        var entities = _repository.Where(expression);
-        var result = await entities.ProjectTo<TResponse>(_mapper.ConfigurationProvider).ToListAsync();
-        return result;
+        return await _repository.WhereAsync(expression);
     }
 }

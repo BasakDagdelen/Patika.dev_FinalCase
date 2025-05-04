@@ -1,4 +1,4 @@
-﻿using Expense_Management_System.Application.DTOs.Common;
+﻿using Expense_Management_System.Application.DTOs.Requests;
 using Expense_Management_System.Domain.Common;
 using Expense_Management_System.Domain.Enums;
 using Microsoft.AspNetCore.Http;
@@ -18,5 +18,5 @@ public class ExpenseRequest: BaseEntity
     public string PaymentLocation { get; set; }
     public string? Description { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
-    public List<ExpenseDocumenTEntity> Documents { get; set; } = new();
+    public List<ExpenseDocumentRequest> Documents { get; set; } = new();
 }

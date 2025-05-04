@@ -7,10 +7,10 @@ namespace Expense_Management_System.Domain.Interfaces.Repositories;
 public interface IGenericRepository<TEntity> where TEntity : BaseEntity
 {
     Task<TEntity> GetByIdAsync(Guid id);
-    IQueryable<TEntity> GetAll();
-    IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> expression);
-    Task AddAsync(TEntity entity);
+    Task<IEnumerable<TEntity>> GetAllAsync();
+    Task<IEnumerable<TEntity>> WhereAsync(Expression<Func<TEntity, bool>> expression);
+    Task<TEntity> AddAsync(TEntity entity);
     Task AddRangeAsync(IEnumerable<TEntity> entities);
-    void Update(TEntity entity);
-    void Delete(TEntity entity);
+    Task UpdateAsync(TEntity entity);
+    Task DeleteAsync(TEntity entity);
 }

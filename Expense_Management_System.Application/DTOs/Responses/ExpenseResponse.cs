@@ -1,5 +1,4 @@
 ﻿using Expense_Management_System.Application.DTOs.Common;
-using Expense_Management_System.Application.DTOs.entitys;
 using Expense_Management_System.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -29,6 +28,6 @@ public class ExpenseResponse: BaseResponse
     public Guid? ApprovedByUserId { get; set; }
     public string? ApprovedByUserFullName { get; set; }
 
-    public List<ExpenseDocumenTEntity>? DocumentUrls { get; set; }
+    public List<ExpenseDocumentResponse>? DocumentUrls { get; set; }
 
 }

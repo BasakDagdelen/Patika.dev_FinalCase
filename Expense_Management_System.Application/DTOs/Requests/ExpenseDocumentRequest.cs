@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.DTOs.Requests;
 
-public class ExpenseDocumenRequest: BaseEntity
+public class ExpenseDocumentRequest: BaseEntity
 {
     public IFormFile File { get; set; }
 }

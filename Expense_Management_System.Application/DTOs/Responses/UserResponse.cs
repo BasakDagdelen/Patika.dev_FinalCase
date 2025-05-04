@@ -1,11 +1,6 @@
 ﻿using Expense_Management_System.Application.DTOs.Common;
 using Expense_Management_System.Domain.Enums;
-using Expense_Management_System.Domain.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Expense_Management_System.Application.DTOs.Responses;
 

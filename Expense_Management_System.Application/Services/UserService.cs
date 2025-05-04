@@ -1,0 +1,48 @@
+﻿using AutoMapper;
+using Expense_Management_System.Application.Interfaces.Services;
+using Expense_Management_System.Domain.Entities;
+using Expense_Management_System.Domain.Enums;
+using Expense_Management_System.Domain.Interfaces.Repositories;
+using Expense_Management_System.Domain.Interfaces.UnitOfWorks;
+using System.Linq.Expressions;
+
+
+namespace Expense_Management_System.Application.Services;
+
+public class UserService : GenericService<User>, IUserService
+{
+    private readonly IUserRepository _userRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork) : base(userRepository, unitOfWork)
+    {
+        _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task ChangeUserRoleAsync(Guid userId, UserRole newRole)
+    {
+        await _userRepository.ChangeUserRoleAsync(userId, newRole);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<bool> CheckUserExistsAsync(string email)
+    {
+        return await _userRepository.UserExistsAsync(email);
+    }
+
+    public async Task<User?> GetUserByEmailAsync(string email)
+    {
+        return await _userRepository.GetByEmailAsync(email);
+    }
+
+    public async Task<User?> GetUserByIdWithExpensesAsync(Guid userId)
+    {
+        return await _userRepository.GetByIdWithExpensesAsync(userId);
+    }
+
+    public async Task<IEnumerable<User>> GetUsersByRoleAsync(UserRole role)
+    {
+        return await _userRepository.GetAllByRoleAsync(role);
+    }
+}

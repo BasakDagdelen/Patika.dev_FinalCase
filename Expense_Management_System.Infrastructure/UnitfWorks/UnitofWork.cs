@@ -4,7 +4,7 @@ using Expense_Management_System.Domain.Interfaces.UnitOfWorks;
 using Expense_Management_System.Infrastructure.Repositories;
 
 
-namespace Expense_Management_System.Infrastructure.UnitofWork;
+namespace Expense_Management_System.Infrastructure.UnitofWorks;
 
 public class UnitofWork : IUnitOfWork, IDisposable
 {

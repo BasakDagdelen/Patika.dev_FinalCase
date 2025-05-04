@@ -1,4 +1,4 @@
-﻿using Expense_Management_System.Application.DTOs.entitys;
+﻿using Expense_Management_System.Application.DTOs.Requests;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.Validation;
 
-public class ExpenseDocumentValidator: AbstractValidator<ExpenseDocumenTEntity>
+public class ExpenseDocumentValidator: AbstractValidator<ExpenseDocumentRequest>
 {
     public ExpenseDocumentValidator()
     {

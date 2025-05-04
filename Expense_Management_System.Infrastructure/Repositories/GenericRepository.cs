@@ -13,45 +13,53 @@ namespace Expense_Management_System.Infrastructure.Repositories;
 public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
 {
     private readonly ApplicationDbContext _context;
-    private readonly DbSet<TEntity> _entities;
+    private readonly DbSet<TEntity> _dbSet;
     public GenericRepository(ApplicationDbContext context)
     {
         _context = context;
-        _entities = _context.Set<TEntity>();
+        _dbSet = _context.Set<TEntity>();
     }
 
-    public async Task AddAsync(TEntity entity)
+    public async Task<TEntity> AddAsync(TEntity entity)
     {
-        await _entities.AddAsync(entity);
+        await _dbSet.AddAsync(entity);
+        await _context.SaveChangesAsync();
+        return entity;
+
     }
 
     public async Task AddRangeAsync(IEnumerable<TEntity> entities)
     {
-        await _entities.AddRangeAsync(entities);
+        await _dbSet.AddRangeAsync(entities);
     }
 
-    public void Delete(TEntity entity)
+    public async Task DeleteAsync(TEntity entity)
     {
-        _entities.Remove(entity);
+        _dbSet.Attach(entity);
+        _context.Entry(entity).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
     }
 
-    public IQueryable<TEntity> GetAll()
+    public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return _entities.AsNoTracking().AsQueryable();
+        return await _dbSet.ToListAsync();
     }
 
     public async Task<TEntity> GetByIdAsync(Guid id)
     {
-        return await _entities.FindAsync(id);
+        return await _dbSet.FindAsync(id);
     }
 
-    public void Update(TEntity entity)
+    public async Task UpdateAsync(TEntity entity)
     {
-        _entities.Update(entity);
+        _dbSet.Attach(entity);
+        _context.Entry(entity).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
     }
 
-    public IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> expression)
-    {
-        return _entities.Where(expression);
+    public async Task<IEnumerable<TEntity>> WhereAsync(Expression<Func<TEntity, bool>> expression) 
+    { 
+        return await _dbSet.Where(expression).ToListAsync(); 
     }
+
 }
