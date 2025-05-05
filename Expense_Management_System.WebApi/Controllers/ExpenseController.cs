@@ -13,7 +13,7 @@ namespace Expense_Management_System.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ExpenseController : ControllerBase
+public class ExpenseController : BaseController
 {
     private readonly IExpenseService _expenseService;
     private readonly IMapper _mapper;
@@ -28,52 +28,50 @@ public class ExpenseController : ControllerBase
     [Authorize(Roles = "Personnel")]
     public async Task<ApiResponse<IEnumerable<ExpenseResponse>>> GetActiveExpenses()
     {
-        var userId = GetUserId();
+        var userId = CurrentUserId;
         var expenses = await _expenseService.GetActiveExpensesByUserAsync(userId);
         var response = _mapper.Map<IEnumerable<ExpenseResponse>>(expenses);
-        return ApiResponse<IEnumerable<ExpenseResponse>>.Success(response);
+        return Success(response);
     }
 
     [HttpGet("history")]
     [Authorize(Roles = "Personnel")]
     public async Task<ApiResponse<IEnumerable<ExpenseResponse>>> GetExpenseHistory()
     {
-        var userId = GetUserId();
+        var userId = CurrentUserId;
         var expenses = await _expenseService.GetExpensesHistoryByUserAsync(userId);
         var response = _mapper.Map<IEnumerable<ExpenseResponse>>(expenses);
-        return ApiResponse<IEnumerable<ExpenseResponse>>.Success(response);
+        return Success(response);
     }
 
     [HttpGet("rejected")]
     [Authorize(Roles = "Personnel")]
     public async Task<ApiResponse<IEnumerable<ExpenseResponse>>> GetRejectedExpenses()
     {
-        var userId = GetUserId();
+        var userId = CurrentUserId;
         var expenses = await _expenseService.GetRejectedExpensesWithReasonAsync(userId);
         var response = _mapper.Map<IEnumerable<ExpenseResponse>>(expenses);
-        return ApiResponse<IEnumerable<ExpenseResponse>>.Success(response);
+        return Success(response);
     }
 
-    // Personelin filtreli arama
     [HttpGet("filter")]
     [Authorize(Roles = "Personnel")]
     public async Task<ApiResponse<IEnumerable<ExpenseResponse>>> FilterMyExpenses([FromQuery] ExpenseFilterRequest filter)
     {
-        var userId = GetUserId();
+        var userId = CurrentUserId;
         var expenses = await _expenseService.GetFilteredExpensesForUserAsync(userId, filter.Status, filter.FromDate, filter.ToDate, filter.MinAmount, filter.MaxAmount);
         var response = _mapper.Map<IEnumerable<ExpenseResponse>>(expenses);
-        return ApiResponse<IEnumerable<ExpenseResponse>>.Success(response);
+        return Success(response);
     }
 
-    // Yeni masraf oluşturma
     [HttpPost]
     [Authorize(Roles = "Personnel")]
     public async Task<ApiResponse<ExpenseResponse>> Create([FromBody] ExpenseRequest request)
     {
-        var userId = GetUserId();
+        var userId = CurrentUserId;
 
         if (request == null || request.Amount <= 0 || request.ExpenseCategoryId == Guid.Empty)
-            return ApiResponse<ExpenseResponse>.Fail("Geçersiz masraf verisi", 400);
+            return Fail<ExpenseResponse>("Invalid expense data", 400);
 
         var expense = _mapper.Map<Expense>(request);
         expense.UserId = userId;
@@ -81,39 +79,36 @@ public class ExpenseController : ControllerBase
         var created = await _expenseService.AddAsync(expense);
         var response = _mapper.Map<ExpenseResponse>(created);
 
-        return ApiResponse<ExpenseResponse>.Success(response, "Masraf başarıyla oluşturuldu.");
+        return Success(response, "Expense was successfully generated.");
     }
 
-    // Admin - tüm bekleyen masraflar
     [HttpGet("pending")]
     [Authorize(Roles = "Admin")]
     public async Task<ApiResponse<IEnumerable<ExpenseResponse>>> GetAllPending()
     {
         var expenses = await _expenseService.GetAllPendingExpensesAsync();
         var response = _mapper.Map<IEnumerable<ExpenseResponse>>(expenses);
-        return ApiResponse<IEnumerable<ExpenseResponse>>.Success(response);
+        return Success(response);
     }
 
-    // Admin - masraf onaylama
     [HttpPost("approve/{expenseId}")]
     [Authorize(Roles = "Admin")]
     public async Task<ApiResponse<ExpenseResponse>> Approve(Guid expenseId)
     {
-        var adminId = GetUserId();
+        var adminId = CurrentUserId;
         var approved = await _expenseService.ApproveExpenseAsync(expenseId, adminId);
         var response = _mapper.Map<ExpenseResponse>(approved);
-        return ApiResponse<ExpenseResponse>.Success(response, "Masraf onaylandı ve ödeme simülasyonu başlatıldı.");
+        return Success(response, "The expense is confirmed and the payment simulation is started.");
     }
 
-    // Admin - masraf reddetme
     [HttpPost("reject/{expenseId}")]
     [Authorize(Roles = "Admin")]
     public async Task<ApiResponse<ExpenseResponse>> Reject(Guid expenseId, [FromBody] RejectExpenseRequest reject)
     {
-        var adminId = GetUserId();
+        var adminId = CurrentUserId;
         var rejected = await _expenseService.RejectExpenseAsync(expenseId, adminId, reject.Reason);
         var response = _mapper.Map<ExpenseResponse>(rejected);
-        return ApiResponse<ExpenseResponse>.Success(response, "Masraf reddedildi.");
+        return Success(response, "Expense denied.");
     }
 
     [HttpGet("{id}")]
@@ -122,10 +117,10 @@ public class ExpenseController : ControllerBase
     {
         var expense = await _expenseService.GetByIdAsync(id);
         if (expense == null)
-            return ApiResponse<ExpenseResponse>.Fail("Masraf bulunamadı", 404);
+            return Fail<ExpenseResponse>("Expense not found.", 404);
 
         var response = _mapper.Map<ExpenseResponse>(expense);
-        return ApiResponse<ExpenseResponse>.Success(response);
+        return Success(response);
     }
 
     [HttpDelete("{id}")]
@@ -134,12 +129,12 @@ public class ExpenseController : ControllerBase
     {
         try
         {
-            await _expenseService.DeleteAsync(id); 
-            return ApiResponse<string>.Success("Silme işlemi başarılı.");
+            await _expenseService.DeleteAsync(id);
+            return ApiResponse<string>.Success("Deletion successful.");
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
-            return ApiResponse<string>.Fail($"Silme işlemi başarısız: {ex.Message}");
+            return ApiResponse<string>.Fail($"Deletion failed: {ex.Message}");
         }
     }
 
@@ -147,21 +142,15 @@ public class ExpenseController : ControllerBase
     [Authorize]
     public async Task<ApiResponse<ExpenseResponse>> Update(Guid id, [FromBody] ExpenseRequest request)
     {
-        var userId = GetUserId();
+        var userId = CurrentUserId;
         var existing = await _expenseService.GetByIdAsync(id);
         if (existing == null || existing.UserId != userId)
-            return ApiResponse<ExpenseResponse>.Fail("Masraf bulunamadı veya yetkisiz erişim", 403);
+            return Fail<ExpenseResponse>("No charges found or unauthorised access", 403);
 
         _mapper.Map(request, existing);
         await _expenseService.UpdateAsync(id, existing);
 
         var mappedEntity = _mapper.Map<ExpenseResponse>(existing);
-        return ApiResponse<ExpenseResponse>.Success(mappedEntity, "Masraf güncellendi");
-    }
-
-
-    private Guid GetUserId()
-    {
-        return Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        return Success(mappedEntity, "Expense updated");
     }
 }

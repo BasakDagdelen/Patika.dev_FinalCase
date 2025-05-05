@@ -44,36 +44,41 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         //       .HasForeignKey(x => x.UserId)
         //       .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasData(
-            builder.Property(x => x.Id == Guid.NewGuid()),
-            builder.Property(x => x.FirstName == "Ahmet"),
-            builder.Property(x => x.LastName == "Çınar"),
-            builder.Property(x => x.Email == "ahmet_cinar@company.com"),
-            builder.Property(x => x.PasswordHash == "$2a$11$Cm93CrScW2tSjqAo3AcEYO0kgVtZvcqLsPu1smj6/MuKiKuVzOaT2"),// Admin123!
-            builder.Property(x => x.PhoneNumber == "05000000000"),
-            builder.Property(x => x.WorkPhoneNumber == "02120000000"),
-            builder.Property(x => x.Address == "Beşiktaş/İstanbul"),
-            builder.Property(x => x.IBAN == "TR000000000000000000000000"),
-            builder.Property(x => x.Role == UserRole.Admin),
-            builder.Property(x => x.InsertedUser == "system"),
-            builder.Property(x => x.InsertedDate == DateTime.Now),
-            builder.Property(x => x.IsActive == true));
+        builder.HasData(new User
+        {
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            FirstName = "Ahmet",
+            LastName = "Cinar",
+            Email = "ahmet.cinar@company.com",
+            PasswordHash = "$2a$11$5Cm9c0sCwZt5jqAo3AcEYO8vgVfZycgLsPuIsmj6/MuxiNuvzDaI2", // Admin123!
+            PhoneNumber = "905300000000",
+            WorkPhoneNumber = "02120000000",
+            Address = "Besiktas/Istanbul",
+            IBAN = "TR330006100519786457841326",
+            BankAccountNumber = new Random().Next(10000000, 99999999).ToString(),
+            Role = UserRole.Admin,
+            InsertedUser = "system",
+            InsertedDate = DateTime.Now,
+            IsActive = true
+        },
 
-        builder.HasData(
-            builder.Property(x => x.Id == Guid.NewGuid()),
-            builder.Property(x => x.FirstName == "Selma"),
-            builder.Property(x => x.LastName == "Deniz"),
-            builder.Property(x => x.Email == "selma_deniz@company.com"),
-            builder.Property(x => x.PasswordHash == "$2a$11$xNlpsCUq8HrfTFSip5R6HOpNIdfq7fZf6AYqQUwE9ZKDYgsFuE9Fe"),// Employee123!
-            builder.Property(x => x.PhoneNumber == "05001112233"),
-            builder.Property(x => x.WorkPhoneNumber == "02120000123"),
-            builder.Property(x => x.Address == "Kartal/İstanbul"),
-            builder.Property(x => x.IBAN == "TR111111111111111111111111"),
-            builder.Property(x => x.Role == UserRole.Personnel),
-            builder.Property(x => x.InsertedUser == "system"),
-            builder.Property(x => x.InsertedDate == DateTime.Now),
-            builder.Property(x => x.IsActive == true));
+        new User
+        {
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+            FirstName = "Selim",
+            LastName = "Deniz",
+            Email = "selim.deniz@company.com",
+            PasswordHash = "$2a$11$5Cm9c0sCwZt5jqAo3AcEYO8vgVfZycgLsPuIsmj6/MuxiNuvzDaI2", // Employee123!
+            PhoneNumber = "90501112233",
+            WorkPhoneNumber = "02120000123",
+            Address = "Kartal/Istanbul",
+            IBAN = "TR330006100519786457841327",
+            BankAccountNumber = new Random().Next(10000000, 99999999).ToString(),
+            Role = UserRole.Personnel,
+            InsertedUser = "system",
+            InsertedDate = DateTime.Now,
+            IsActive = true
+        });
     }
 }
 
- 

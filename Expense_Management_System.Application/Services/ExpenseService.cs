@@ -4,12 +4,8 @@ using Expense_Management_System.Domain.Entities;
 using Expense_Management_System.Domain.Enums;
 using Expense_Management_System.Domain.Interfaces.Repositories;
 using Expense_Management_System.Domain.Interfaces.UnitOfWorks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Expense_Management_System.Application.Services;
 
@@ -46,7 +42,7 @@ public class ExpenseService : GenericService<Expense>, IExpenseService
         await _unitOfWork.SaveChangesAsync();
 
         // Trigger payment simulation
-        //await TriggerPaymentSimulationAsync(expenseId, expense.UserId);
+        await TriggerPaymentSimulationAsync(expenseId, expense.UserId);
 
         return expense;
     }
@@ -157,19 +153,19 @@ public class ExpenseService : GenericService<Expense>, IExpenseService
         return expense;
     }
 
-    //public async Task<bool> TriggerPaymentSimulationAsync(Guid expenseId, Guid userId)
-    //{
-    //    var expense = await _expenseRepository.GetByIdAsync(expenseId);
-    //    if (expense == null)
-    //        throw new Exception("Expense not found");
+    public async Task<bool> TriggerPaymentSimulationAsync(Guid expenseId, Guid userId)
+    {
+        var expense = await _expenseRepository.GetByIdAsync(expenseId);
+        if (expense == null)
+            throw new Exception("Expense not found");
 
-    //    if (expense.Status != ExpenseStatus.Approved)
-    //        throw new Exception("Only approved expenses can trigger payment");
+        if (expense.Status != ExpenseStatus.Approved)
+            throw new Exception("Only approved expenses can trigger payment");
 
-    //    // Simulate payment processing
-    //    var payment = await _paymentService.ProcessPaymentAsync(expense);
-    //    return payment != null;
-    //}
+        // ödeme sistemi simülasyonuu
+        var payment = await _paymentService.ProcessPaymentAsync(expense);
+        return payment != null;
+    }
 }
 
 public static class ExpressionExtensions

@@ -22,8 +22,8 @@ public class ExpenseDocumentConfiguration : IEntityTypeConfiguration<ExpenseDocu
         builder.Property(x => x.UpdatedUser).IsRequired(false).HasMaxLength(250);
         builder.Property(x => x.IsActive).IsRequired(true).HasDefaultValue(true);
 
-        builder.Property(x => x.FileName).IsRequired().HasMaxLength(255);
-        builder.Property(x => x.FileUrl).IsRequired().HasMaxLength(500);
+        builder.Property(x => x.UploadDate).IsRequired();
+        builder.Property(x => x.FilePath).IsRequired().HasMaxLength(500);
 
         builder.HasOne(x => x.Expenses)
                .WithMany(x => x.ExpenseDocuments)

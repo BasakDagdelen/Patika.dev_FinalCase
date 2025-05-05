@@ -1,10 +1,9 @@
-﻿using AutoMapper;
+﻿using Expense_Management_System.Application.DTOs.Requests;
 using Expense_Management_System.Application.Interfaces.Services;
 using Expense_Management_System.Domain.Entities;
 using Expense_Management_System.Domain.Enums;
 using Expense_Management_System.Domain.Interfaces.Repositories;
 using Expense_Management_System.Domain.Interfaces.UnitOfWorks;
-using System.Linq.Expressions;
 
 
 namespace Expense_Management_System.Application.Services;
@@ -29,6 +28,32 @@ public class UserService : GenericService<User>, IUserService
     public async Task<bool> CheckUserExistsAsync(string email)
     {
         return await _userRepository.UserExistsAsync(email);
+    }
+
+    public async Task<User> CreateUserAsync(RegisterRequest request)
+    {
+        var userExists = await _userRepository.GetByEmailAsync(request.Email);
+        if (userExists != null)
+            throw new Exception("This e-mail address is already registered.");
+
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
+        var user = new User
+        {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            PasswordHash = hashedPassword,
+            PhoneNumber = request.PhoneNumber,
+            WorkPhoneNumber = request.WorkPhoneNumber,
+            Address = request.Address,
+            IBAN = request.IBAN,
+            BankAccountNumber = request.BankAccountNumber,
+            Role = UserRole.Personnel
+        };
+
+        await _userRepository.AddAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+        return user;
     }
 
     public async Task<User?> GetUserByEmailAsync(string email)

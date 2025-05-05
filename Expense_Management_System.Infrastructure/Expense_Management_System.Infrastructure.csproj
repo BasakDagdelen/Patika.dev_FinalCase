@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Expense_Management_System.Domain\Expense_Management_System.Domain.csproj" />
+    <ProjectReference Include="..\Expense_Management_System.Application\Expense_Management_System.Application.csproj" />
   </ItemGroup>
 
 </Project>

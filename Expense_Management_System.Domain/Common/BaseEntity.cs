@@ -8,7 +8,7 @@ namespace Expense_Management_System.Domain.Common;
 
 public abstract class BaseEntity
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string InsertedUser { get; set; }
     public DateTime InsertedDate { get; set; }
     public string? UpdatedUser { get; set; }
