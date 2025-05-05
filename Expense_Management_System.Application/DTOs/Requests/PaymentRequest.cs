@@ -13,5 +13,5 @@ public class PaymentRequest: BaseEntity
 {
     public Guid ExpenseClaimId { get; set; }
     public decimal Amount { get; set; }
-    public PaymentMethod Method { get; set; }
+    public PaymentMethod PaymnetMethod { get; set; }
 }

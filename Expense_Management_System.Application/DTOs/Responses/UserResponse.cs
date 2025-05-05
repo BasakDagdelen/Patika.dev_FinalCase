@@ -14,7 +14,9 @@ public class UserResponse: BaseResponse
     public string? WorkPhoneNumber { get; set; }
     public string Address { get; set; }
     public string IBAN { get; set; }
+    public string AccountNumber { get; set; }
     public UserRole UserRole { get; set; }
+  
     //public ICollection<Expense> Expenses { get; set; }
     //public ICollection<Payment> Payments { get; set; }
 }

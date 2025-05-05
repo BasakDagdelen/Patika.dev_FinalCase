@@ -18,7 +18,8 @@ public class UserRequest: BaseEntity
     public string PhoneNumber { get; set; }
     public string? WorkPhoneNumber { get; set; }
     public string Address { get; set; } 
+    public UserRole UserRole { get; set; }
     public string IBAN { get; set; }
-    public UserRole UserRole { get; set; } 
+    public string AccountNumber { get; set; }
 }
 

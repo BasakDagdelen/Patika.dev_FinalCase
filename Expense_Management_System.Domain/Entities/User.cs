@@ -17,6 +17,7 @@ namespace Expense_Management_System.Domain.Entities
         public string BankAccountNumber { get; set; }
         public UserRole Role { get; set; }
 
+        public BankAccount BankAccount { get; set; }
         public ICollection<Expense> Expenses { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
 

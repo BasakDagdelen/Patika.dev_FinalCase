@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace Expense_Management_System.Application.Validation;
 
-public class UserValidator: AbstractValidator<UserRequest>
+public class UserValidator : AbstractValidator<UserRequest>
 {
     public UserValidator()
     {
@@ -22,7 +22,7 @@ public class UserValidator: AbstractValidator<UserRequest>
         .NotEmpty().WithMessage("Last name is required...")
         .MaximumLength(50).WithMessage("Last name must contain a maximum of 50 characters...");
 
-        RuleFor(x => x.Email)          // ***** email alanı unique bir değer olmalı
+        RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email address is required...")
             .EmailAddress().WithMessage("Email address format is invalid...");
 
@@ -49,6 +49,10 @@ public class UserValidator: AbstractValidator<UserRequest>
             .NotEmpty().WithMessage("IBAN is required...")
             .Length(26).WithMessage("IBAN must be exactly 26 characters long...")
             .Matches(@"^TR\d{24}$").WithMessage("IBAN format is invalid. It must start with 'TR' followed by 24 digits...");
+
+        RuleFor(x => x.AccountNumber)
+           .NotEmpty().WithMessage("Account number cannot be empty.")
+           .Matches(@"^\d{8}$").WithMessage("Account number must be exactly 8 digits long.");
 
         RuleFor(x => x.UserRole)
             .IsInEnum().WithMessage("Invalid user role...");

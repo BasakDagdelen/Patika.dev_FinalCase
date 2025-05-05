@@ -15,7 +15,7 @@ public class PaymentResponse: BaseResponse
     public Guid ExpenseClaimId { get; set; }
     public decimal Amount { get; set; }
     public DateTime PaymentDate { get; set; }
-    public PaymentMethod Method { get; set; }
+    public PaymentMethod PaymentMethod { get; set; }
     public string TransactionReference { get; set; }
     public ExpenseStatus ExpenseStatus { get; set; }
 }
