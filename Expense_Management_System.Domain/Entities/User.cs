@@ -13,8 +13,8 @@ namespace Expense_Management_System.Domain.Entities
         public string PhoneNumber { get; set; }
         public string? WorkPhoneNumber { get; set; }
         public string Address { get; set; }
-        public string IBAN { get; set; }
-        public string BankAccountNumber { get; set; }
+        //public string IBAN { get; set; }
+        //public string BankAccountNumber { get; set; }
         public UserRole Role { get; set; }
 
         public BankAccount BankAccount { get; set; }

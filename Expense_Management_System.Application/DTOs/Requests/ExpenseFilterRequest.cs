@@ -1,8 +1,9 @@
-﻿using Expense_Management_System.Domain.Enums;
+﻿using Expense_Management_System.Application.DTOs.Common;
+using Expense_Management_System.Domain.Enums;
 
 namespace Expense_Management_System.Application.DTOs.Requests;
 
-public class ExpenseFilterRequest
+public class ExpenseFilterRequest: BaseRequest
 {
     public ExpenseStatus? Status { get; set; }
 

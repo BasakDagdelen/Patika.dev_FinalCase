@@ -27,10 +27,10 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.Property(x => x.TransactionReference).IsRequired().HasMaxLength(100);
         builder.Property(x => x.PaymentMethod).IsRequired();
 
-        //builder.HasOne(x => x.User)
-        //       .WithMany(x => x.Payments)
-        //       .HasForeignKey(x => x.UserId)
-        //       .OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.User)
+               .WithMany(x => x.Payments)
+               .HasForeignKey(x => x.UserId)
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.Expense)
                .WithMany(x => x.Payments)

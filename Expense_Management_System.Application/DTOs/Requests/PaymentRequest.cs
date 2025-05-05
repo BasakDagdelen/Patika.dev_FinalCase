@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.DTOs.Requests;
 
-public class PaymentRequest: BaseEntity
+public class PaymentRequest: BaseRequest
 {
     public Guid ExpenseClaimId { get; set; }
     public decimal Amount { get; set; }

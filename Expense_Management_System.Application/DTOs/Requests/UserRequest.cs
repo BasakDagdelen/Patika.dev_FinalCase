@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.DTOs.Requests;
 
-public class UserRequest: BaseEntity
+public class UserRequest: BaseRequest
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

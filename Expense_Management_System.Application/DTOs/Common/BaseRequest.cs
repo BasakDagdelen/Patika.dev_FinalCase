@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.DTOs.Common;
 
-public class Baseentity
+public class BaseRequest
 {
 }

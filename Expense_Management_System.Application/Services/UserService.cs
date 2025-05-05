@@ -46,8 +46,16 @@ public class UserService : GenericService<User>, IUserService
             PhoneNumber = request.PhoneNumber,
             WorkPhoneNumber = request.WorkPhoneNumber,
             Address = request.Address,
-            IBAN = request.IBAN,
-            BankAccountNumber = request.BankAccountNumber,
+            //IBAN = request.IBAN,
+            //BankAccountNumber = request.BankAccountNumber,
+            BankAccount = new BankAccount
+            {
+                IBAN = request.IBAN,
+                AccountNumber = request.BankAccountNumber,
+                InsertedUser = "system",
+                InsertedDate = DateTime.Now,
+                IsActive = true
+            },
             Role = UserRole.Personnel
         };
 

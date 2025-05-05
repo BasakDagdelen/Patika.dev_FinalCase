@@ -29,6 +29,29 @@ public class BankAccountConfiguration : IEntityTypeConfiguration<BankAccount>
                .WithOne(u => u.BankAccount)
                .HasForeignKey<BankAccount>(x => x.UserId)
                .OnDelete(DeleteBehavior.Cascade);
- 
+
+        builder.HasData(
+        new BankAccount
+        {
+            Id = Guid.Parse("d290f1ee-6c54-4b01-90e6-d701748f0855"),
+            IBAN = "TR330006100519786457841326",
+            AccountNumber = "12345678",
+            UserId = Guid.Parse("d290f1ee-6c54-4b01-90e6-d701748f0851"),
+            InsertedUser = "system",
+            InsertedDate = new DateTime(2024, 05, 06, 12, 0, 0),
+            IsActive = true
+        },
+        new BankAccount
+        {
+            Id = Guid.Parse("a6b1c9e2-37c4-49e8-b1af-10b1546e529f\r\n"),
+            IBAN = "TR330006100519786457841327",
+            AccountNumber = "87654321",
+            UserId = Guid.Parse("f5a3c4b7-7d23-4c6e-91f0-9e0fa54b8f32"),
+            InsertedUser = "system",
+            InsertedDate = new DateTime(2024, 05, 06, 12, 0, 0),
+            IsActive = true
+        }
+        );
+
     }
 }

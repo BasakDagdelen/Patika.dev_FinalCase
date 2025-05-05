@@ -23,48 +23,47 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.UpdatedUser).IsRequired(false).HasMaxLength(250);
         builder.Property(x => x.IsActive).IsRequired(true).HasDefaultValue(true);
 
-        builder.Property(x => x.FirstName).IsRequired().HasMaxLength(50);
-        builder.Property(x => x.LastName).IsRequired().HasMaxLength(50);
-        builder.Property(x => x.Email).IsRequired().HasMaxLength(100);
+        builder.Property(x => x.FirstName).IsRequired(true).HasMaxLength(50);
+        builder.Property(x => x.LastName).IsRequired(true).HasMaxLength(50);
+        builder.Property(x => x.Email).IsRequired(true).HasMaxLength(100);
         builder.HasIndex(x => x.Email).IsUnique();
-        builder.Property(x => x.PasswordHash).IsRequired().HasMaxLength(255);
-        builder.Property(x => x.PhoneNumber).IsRequired().HasMaxLength(15);
+        builder.Property(x => x.PasswordHash).IsRequired(true).HasMaxLength(255);
+        builder.Property(x => x.PhoneNumber).IsRequired(true).HasMaxLength(15);
         builder.Property(x => x.WorkPhoneNumber).HasMaxLength(15);
-        builder.Property(x => x.Address).IsRequired().HasMaxLength(200);
-        builder.Property(x => x.IBAN).IsRequired().HasMaxLength(34);
-        builder.Property(x => x.Role).IsRequired();
+        builder.Property(x => x.Address).IsRequired(false).HasMaxLength(200);
+        //builder.Property(x => x.IBAN).IsRequired().HasMaxLength(34);
+        builder.Property(x => x.Role).IsRequired().HasConversion<string>();
 
         builder.HasMany(x => x.Expenses)
                .WithOne(x => x.User)
                .HasForeignKey(x => x.UserId)
                .OnDelete(DeleteBehavior.Restrict);
 
-        //builder.HasMany(x => x.Payments)
-        //       .WithOne(x => x.User)
-        //       .HasForeignKey(x => x.UserId)
-        //       .OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(x => x.Payments)
+               .WithOne(x => x.User)
+               .HasForeignKey(x => x.UserId)
+               .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasData(new User
-        {
-            Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
-            FirstName = "Ahmet",
-            LastName = "Cinar",
-            Email = "ahmet.cinar@company.com",
-            PasswordHash = "$2a$11$5Cm9c0sCwZt5jqAo3AcEYO8vgVfZycgLsPuIsmj6/MuxiNuvzDaI2", // Admin123!
-            PhoneNumber = "905300000000",
-            WorkPhoneNumber = "02120000000",
-            Address = "Besiktas/Istanbul",
-            IBAN = "TR330006100519786457841326",
-            BankAccountNumber = new Random().Next(10000000, 99999999).ToString(),
-            Role = UserRole.Admin,
-            InsertedUser = "system",
-            InsertedDate = DateTime.Now,
-            IsActive = true
-        },
+        builder.HasData(
+            new User
+            {
+                Id = Guid.Parse("d290f1ee-6c54-4b01-90e6-d701748f0851"),
+                FirstName = "Ahmet",
+                LastName = "Cinar",
+                Email = "ahmet.cinar@company.com",
+                PasswordHash = "$2a$11$5Cm9c0sCwZt5jqAo3AcEYO8vgVfZycgLsPuIsmj6/MuxiNuvzDaI2",  // Admin123!
+                PhoneNumber = "905300000000",
+                WorkPhoneNumber = "02120000000",
+                Address = "Besiktas/Istanbul",
+                Role = UserRole.Admin,
+                InsertedUser = "system",
+                InsertedDate = new DateTime(2024, 05, 06, 12, 0, 0),
+                IsActive = true,
 
+            },
         new User
         {
-            Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+            Id = Guid.Parse("f5a3c4b7-7d23-4c6e-91f0-9e0fa54b8f32"),
             FirstName = "Selim",
             LastName = "Deniz",
             Email = "selim.deniz@company.com",
@@ -72,13 +71,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             PhoneNumber = "90501112233",
             WorkPhoneNumber = "02120000123",
             Address = "Kartal/Istanbul",
-            IBAN = "TR330006100519786457841327",
-            BankAccountNumber = new Random().Next(10000000, 99999999).ToString(),
             Role = UserRole.Personnel,
             InsertedUser = "system",
-            InsertedDate = DateTime.Now,
+            InsertedDate = new DateTime(2024, 05, 06, 12, 0, 0),
             IsActive = true
         });
+
     }
 }
 

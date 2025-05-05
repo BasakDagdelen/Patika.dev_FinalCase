@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.DTOs.Requests;
 
-public class ExpenseCategoryRequest: BaseEntity
+public class ExpenseCategoryRequest: BaseRequest
 {
     public string Name { get; set; }
     public string? Description { get; set; }

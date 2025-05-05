@@ -17,6 +17,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAntiforgery();
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
@@ -61,6 +63,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitofWork>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -69,7 +73,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAntiforgery();
+
+app.UseAuthentication();
+
 app.UseHttpsRedirection();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
