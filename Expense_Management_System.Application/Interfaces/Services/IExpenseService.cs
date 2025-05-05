@@ -21,7 +21,7 @@ public interface IExpenseService : IGenericService<Expense>
     Task<IEnumerable<Expense>> GetActiveExpensesByUserAsync(Guid userId);
     Task<IEnumerable<Expense>> GetExpensesHistoryByUserAsync(Guid userId);
     Task<IEnumerable<Expense>> GetRejectedExpensesWithReasonAsync(Guid userId);
-    //Task<bool> TriggerPaymentSimulationAsync(Guid expenseId, Guid userId);  // Onaylanan talepler için ödeme simülasyonu başlatır.
+    Task<bool> TriggerPaymentSimulationAsync(Guid expenseId, Guid userId);  // Onaylanan talepler için ödeme simülasyonu başlatır.
 
 
     // Admin işlemleri

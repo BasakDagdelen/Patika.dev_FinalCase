@@ -10,9 +10,9 @@ namespace Expense_Management_System.Domain.Interfaces.Repositories;
 
 public interface IUserRepository:IGenericRepository<User>
 {
-    Task<IEnumerable<User>> GetAllByRoleAsync(UserRole role); 
-    Task<User?> GetByEmailAsync(string email); 
-    Task<User?> GetByIdWithExpensesAsync(Guid userId); 
-    Task<bool> UserExistsAsync(string email); 
-    Task ChangeUserRoleAsync(Guid userId, UserRole newRole); 
+    Task<IEnumerable<User>> GetAllByRoleAsync(UserRole role);
+    Task<User?> GetByEmailAsync(string email);
+    Task<User?> GetByIdWithExpensesAsync(Guid userId);
+    Task<bool> UserExistsAsync(string email);
+    Task ChangeUserRoleAsync(Guid userId, UserRole newRole);
 }

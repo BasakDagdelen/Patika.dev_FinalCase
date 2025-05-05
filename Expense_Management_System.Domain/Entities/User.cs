@@ -14,6 +14,7 @@ namespace Expense_Management_System.Domain.Entities
         public string? WorkPhoneNumber { get; set; }
         public string Address { get; set; }
         public string IBAN { get; set; }
+        public string BankAccountNumber { get; set; }
         public UserRole Role { get; set; }
 
         public ICollection<Expense> Expenses { get; set; }

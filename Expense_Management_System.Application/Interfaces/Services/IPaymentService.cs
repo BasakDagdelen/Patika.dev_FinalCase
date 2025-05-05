@@ -11,4 +11,5 @@ public interface IPaymentService : IGenericService<Payment>
 {
     Task<Payment> GetPaymentByExpenseIdAsync(Guid expenseId);
     Task<IEnumerable<Payment>> GetPaymentsByUserIdAsync(Guid userId);
+    Task<Payment> ProcessPaymentAsync(Expense expense);
 }

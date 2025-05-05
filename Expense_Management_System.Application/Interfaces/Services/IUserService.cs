@@ -15,4 +15,5 @@ public interface IUserService : IGenericService<User>
     Task<User?> GetUserByIdWithExpensesAsync(Guid userId);
     Task<bool> CheckUserExistsAsync(string email);
     Task ChangeUserRoleAsync(Guid userId, UserRole newRole);
+    Task<User> CreateUserAsync(RegisterRequest request);
 }

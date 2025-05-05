@@ -9,7 +9,9 @@ namespace Expense_Management_System.Application.Interfaces.Services;
 
 public interface IExpenseDocumentService : IGenericService<ExpenseDocument>
 {
-    Task<IEnumerable<ExpenseDocument>> GetByExpenseIdAsync(Guid expenseId);
-    Task<IEnumerable<ExpenseDocument>> GetByUserIdAsync(Guid userId);
+    Task<IEnumerable<ExpenseDocument>> GetDocumentsByExpenseIdAsync(Guid expenseId);
+    Task<IEnumerable<ExpenseDocument>> GetDocumentsByUserIdAsync(Guid userId);
     Task<bool> IsDocumentLinkedToApprovedExpenseAsync(Guid documentId);
+
+
 }
