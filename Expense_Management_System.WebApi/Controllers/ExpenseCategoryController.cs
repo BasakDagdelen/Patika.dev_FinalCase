@@ -51,6 +51,11 @@ public class ExpenseCategoryController : BaseController
             return Fail<ExpenseCategoryResponse>("Category name already exists", 400);
 
         var entity = _mapper.Map<ExpenseCategory>(categoryRequest);
+
+        entity.InsertedDate = DateTime.UtcNow;
+        entity.InsertedUser = "system";
+        entity.IsActive = true;
+
         var createdEntity = await _expenseCategoryService.AddAsync(entity);
         var mappedEntity = _mapper.Map<ExpenseCategoryResponse>(createdEntity);
         return Success(mappedEntity, "Category name successfully created.");
@@ -60,33 +65,48 @@ public class ExpenseCategoryController : BaseController
     [HttpPut("{id}")]
     public async Task<ApiResponse<ExpenseCategoryResponse>> Update(Guid id, [FromBody] ExpenseCategoryRequest categoryRequest)
     {
+
         var existingEntity = await _expenseCategoryService.GetByIdAsync(id);
         if (existingEntity is null)
             return Fail<ExpenseCategoryResponse>("Category not found", 404);
 
-        if (await _expenseCategoryService.IsCategoryNameExistsAsync(categoryRequest.Name, id))
-            return Fail<ExpenseCategoryResponse>("Category name already exists");
+        // Sadece isim değişiyorsa kontrol et
+        if (!string.Equals(existingEntity.Name, categoryRequest.Name, StringComparison.OrdinalIgnoreCase))
+        {
+            if (await _expenseCategoryService.IsCategoryNameExistsAsync(categoryRequest.Name))
+                return Fail<ExpenseCategoryResponse>("Category name already exists");
+        }
 
-        var updatedEntity = _mapper.Map(categoryRequest, existingEntity);
-        await _expenseCategoryService.UpdateAsync(id, updatedEntity);
+        _mapper.Map(categoryRequest, existingEntity);
+        existingEntity.UpdatedDate = DateTime.UtcNow;
+        existingEntity.UpdatedUser = CurrentUserId.ToString();
+        await _expenseCategoryService.UpdateAsync(id, existingEntity);
 
-        var mappedEntity = _mapper.Map<ExpenseCategoryResponse>(updatedEntity);
+        var mappedEntity = _mapper.Map<ExpenseCategoryResponse>(existingEntity);
         return Success(mappedEntity, "Category successfully updated.");
     }
+
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ApiResponse> Delete(Guid id)
     {
-        var existingEntity = await _expenseCategoryService.GetByIdAsync(id);
-        if (existingEntity is null)
-            return Fail("Category not found", 404);
+        try
+        {
+            var existingEntity = await _expenseCategoryService.GetByIdAsync(id);
+            if (existingEntity is null)
+                return Fail("Category not found", 404);
 
-        var canDelete = await _expenseCategoryService.CanDeleteCategoryAsync(id);
-        if (!canDelete)
-            return Fail("Cannot be deleted as there are active expense records for this category.");
+            var canDelete = await _expenseCategoryService.CanDeleteCategoryAsync(id);
+            if (!canDelete)
+                return Fail("Cannot be deleted as there are active expense records for this category.");
 
-        await _expenseCategoryService.DeleteAsync(existingEntity.Id);
-        return Success("Category name successfully deleted.");
+            await _expenseCategoryService.DeleteAsync(existingEntity.Id);
+            return Success("Category name successfully deleted.");
+        }
+        catch
+        {
+            return Fail("Delete failed. Please try again later.", 500);
+        }
     }
 }

@@ -24,14 +24,8 @@ namespace Expense_Management_System.Infrastructure.Repositories
 
         }
 
-        public async Task<bool> IsCategoryNameUniqueAsync(string categoryName, Guid? excludeId = null)
-        {
-            if (excludeId.HasValue)
-                return !await _context.ExpenseCategories.AnyAsync(c => c.Name.ToLower() == categoryName.ToLower() && c.Id != excludeId.Value);
-
-            return !await _context.ExpenseCategories.AnyAsync(c => c.Name.ToLower() == categoryName.ToLower());
-
-        }
+        public async Task<bool> IsCategoryNameUniqueAsync(string categoryName)
+         =>  await _context.ExpenseCategories.AnyAsync(c => c.Name.ToLower() == categoryName.ToLower());
       
     }
 }

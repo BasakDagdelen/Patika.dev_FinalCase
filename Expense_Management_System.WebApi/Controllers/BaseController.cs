@@ -8,14 +8,22 @@ namespace Expense_Management_System.WebApi.Controllers;
 [ApiController]
 public class BaseController : ControllerBase
 {
-     protected Guid CurrentUserId => 
-        Guid.TryParse(User.FindFirst("id")?.Value, out var id)
-            ? id
-            : throw new UnauthorizedAccessException("User ID not found.");
+    protected Guid CurrentUserId =>
+     Guid.TryParse(
+         User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+         User.FindFirstValue("nameid") ??
+         User.FindFirstValue("nameId") ??
+         User.FindFirstValue("id") ??
+         User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"),
+         out var id)
+         ? id
+         : throw new UnauthorizedAccessException("User ID not found.");
 
-    protected string CurrentUserRole => 
-        User.FindFirst(ClaimTypes.Role)?.Value 
-        ?? throw new UnauthorizedAccessException("User role not found.");
+    protected string CurrentUserRole =>
+        User.FindFirstValue(ClaimTypes.Role) ??               // Önce standart claim
+        User.FindFirstValue("role") ??                        // Sonra kısa ad
+        User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role") ?? // Sonra uzun URI
+        throw new UnauthorizedAccessException("User role not found.");
 
     protected ApiResponse<T> Success<T>(T data, string? message = null)
         => ApiResponse<T>.Success(data, message);

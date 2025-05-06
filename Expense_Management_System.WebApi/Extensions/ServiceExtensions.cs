@@ -44,17 +44,14 @@ public static class ServiceExtensions
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtSettings["Issuer"],
                 ValidAudience = jwtSettings["Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"])),
+                NameClaimType = "nameId",
+                RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
             };
         });
 
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-        });
-
+        services.AddAuthorization();
         services.AddAntiforgery();
-
         return services;
     }
 
@@ -80,7 +77,7 @@ public static class ServiceExtensions
             .AddFluentValidation(x =>
             {
                 x.RegisterValidatorsFromAssemblyContaining<UserValidator>();
-            });  
+            });
 
         return services;
     }
@@ -104,6 +101,11 @@ public static class ServiceExtensions
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IExpenseCategoryService, ExpenseCategoryService>();
+        services.AddScoped<IExpenseDocumentService, ExpenseDocumentService>();
+        services.AddScoped<IExpenseService, ExpenseService>();
+        services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IUnitOfWork, UnitofWork>();
 
         return services;

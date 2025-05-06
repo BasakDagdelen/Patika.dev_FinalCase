@@ -10,5 +10,5 @@ namespace Expense_Management_System.Application.Interfaces.Services;
 public interface IExpenseCategoryService : IGenericService<ExpenseCategory>
 {
     Task<bool> CanDeleteCategoryAsync(Guid id);
-    Task<bool> IsCategoryNameExistsAsync(string name, Guid? excludeId = null);
+    Task<bool> IsCategoryNameExistsAsync(string name);
 }

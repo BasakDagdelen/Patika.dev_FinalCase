@@ -29,25 +29,21 @@ public class GenericService<TEntity> : IGenericService<TEntity> where TEntity : 
     public async Task DeleteAsync(Guid id)
     {
         var entity = await _repository.GetByIdAsync(id);
-        if (entity is null)
+        if (entity is null || !entity.IsActive)
             throw new Exception($"Entity with id {id} not found.");
 
-        entity.IsActive = false; // Soft delete
-        _repository.UpdateAsync(entity);
+        entity.IsActive = false;
+        await _repository.DeleteAsync(entity);
         await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync()
-    {
-        return await _repository.GetAllAsync();
-    }
+         => await _repository.GetAllAsync();
+
 
     public async Task<TEntity> GetByIdAsync(Guid id)
     {
         var entity = await _repository.GetByIdAsync(id);
-        if (entity is null)
-            throw new Exception($"Entity with id {id} not found.");
-
         return entity;
     }
 
@@ -63,7 +59,6 @@ public class GenericService<TEntity> : IGenericService<TEntity> where TEntity : 
 
 
     public async Task<IEnumerable<TEntity>> WhereAsync(Expression<Func<TEntity, bool>> expression)
-    {
-        return await _repository.WhereAsync(expression);
-    }
+         => await _repository.WhereAsync(expression);
+
 }

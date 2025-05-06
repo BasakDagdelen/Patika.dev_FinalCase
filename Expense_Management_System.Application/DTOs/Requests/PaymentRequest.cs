@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 namespace Expense_Management_System.Application.DTOs.Requests;
 
 public class PaymentRequest: BaseRequest
-{
-    public Guid ExpenseClaimId { get; set; }
-    public decimal Amount { get; set; }
-    public PaymentMethod PaymnetMethod { get; set; }
+{      
+    public Guid ExpenseId { get; set; }       
+    public string BankAccountNumber { get; set; }
+    public PaymentMethod PaymentMethod { get; set; }
 }

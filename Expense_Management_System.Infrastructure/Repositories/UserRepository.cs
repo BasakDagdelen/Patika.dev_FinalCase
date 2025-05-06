@@ -23,7 +23,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     public async Task ChangeUserRoleAsync(Guid userId, UserRole newRole)
     {
         var user = await _context.Users.FindAsync(userId);
-        if (user == null) 
+        if (user == null)
             throw new Exception("User not found");
 
         user.Role = newRole;
@@ -31,21 +31,14 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     }
 
     public async Task<IEnumerable<User>> GetAllByRoleAsync(UserRole role)
-    {
-        return await _context.Users.Where(u => u.Role == role).ToListAsync();
-    }
+        => await _context.Users.Where(u => u.Role == role).ToListAsync();
 
     public async Task<User?> GetByEmailAsync(string email)
-    {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-    }
+        => await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
     public async Task<User?> GetByIdWithExpensesAsync(Guid userId)
-    {
-        return await _context.Users.Include(u => u.Expenses).FirstOrDefaultAsync(u => u.Id == userId);
-    }
+        => await _context.Users.Include(u => u.Expenses).FirstOrDefaultAsync(u => u.Id == userId);
 
     public async Task<bool> UserExistsAsync(string email)
-    {
-        return await _context.Users.AnyAsync(u => u.Email == email);
-    }
+        => await _context.Users.AnyAsync(u => u.Email == email);
 }

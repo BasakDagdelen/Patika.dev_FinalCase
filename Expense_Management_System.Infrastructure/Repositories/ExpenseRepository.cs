@@ -18,24 +18,22 @@ public class ExpenseRepository : GenericRepository<Expense>, IExpenseRepository
         _context = context;
     }
     public async Task<IEnumerable<Expense>> GetActiveExpenseSAsync(Guid userId)
-    {
-        return await _context.Expenses.Where(e => e.UserId == userId && e.Status == ExpenseStatus.Pending && e.IsActive).ToListAsync();
-    }
+        => await _context.Expenses.Where(e => e.UserId == userId && e.Status == ExpenseStatus.Pending && e.IsActive).ToListAsync();
 
     public async Task<IEnumerable<Expense>> GetExpenseHistoryAsync(Guid userId)
-    {
-       return await _context.Expenses.Where(e => e.UserId == userId && e.Status == ExpenseStatus.Approved && e.IsActive).ToListAsync();
-    }
+       => await _context.Expenses.Where(e => e.UserId == userId && e.Status == ExpenseStatus.Approved && e.IsActive).ToListAsync();
 
     public async Task<IEnumerable<Expense>> GetExpensesByCategoryAsync(Guid categoryId)
-    {
-        return await _context.Expenses.Where(e => e.ExpenseCategoryId == categoryId && e.IsActive).ToListAsync();
-    }
+        => await _context.Expenses.Where(e => e.ExpenseCategoryId == categoryId && e.IsActive).ToListAsync();
 
     public async Task<IEnumerable<Expense>> GetExpensesByStatusAsync(ExpenseStatus status)
-    {
-        return await _context.Expenses.Where(e => e.Status == status && e.IsActive).ToListAsync();
-    }
+        => await _context.Expenses
+            .Where(e => e.Status == status && e.IsActive)
+            .ToListAsync();
 
-
+    public async Task<Expense> GetExpenseWithUserAndBankAccountAsync(Guid expenseId)
+        => await _context.Expenses
+            .Include(e => e.User)
+            .ThenInclude(u => u.BankAccount)
+            .FirstOrDefaultAsync(e => e.Id == expenseId);
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -33,13 +34,22 @@ public class UserValidator : AbstractValidator<UserRequest>
             .WithMessage("Password must include at least one uppercase letter, one lowercase letter, and one number or special character...");
 
         RuleFor(x => x.PhoneNumber)
-            .NotEmpty().WithMessage("Phone number is required...")
-            .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Phone number format is invalid... Example: 0530 123 4567");
+            .NotEmpty().WithMessage("Phone number is required.")
+            .Must(phone =>
+            {
+                var cleanedPhone = phone?.Replace(" ", "").Replace("-", "");
+                return Regex.IsMatch(cleanedPhone, @"^(\+90|0)?5\d{9}$");
+            })
+            .WithMessage("Invalid format. Examples: +905551234567 or 05551234567");
 
         RuleFor(x => x.WorkPhoneNumber)
-            .Matches(@"^\+?[1-9]\d{1,14}$")
-            .When(x => !string.IsNullOrEmpty(x.WorkPhoneNumber))
-            .WithMessage("Work phone number format is invalid... Example: 0212 123 4567");
+              .Must(phone =>
+              {
+                  if (string.IsNullOrEmpty(phone)) return true;
+                  var cleanedPhone = Regex.Replace(phone, @"[\s\-()]", "");
+                  return Regex.IsMatch(cleanedPhone, @"^(\+?[1-9]\d{1,14}|0\d{10,14})$");
+              })
+               .WithMessage("Invalid format. Examples: +902121234567, 02121234567 veya 05551234567");
 
         RuleFor(x => x.Address)
             .NotEmpty().WithMessage("Address is required...")

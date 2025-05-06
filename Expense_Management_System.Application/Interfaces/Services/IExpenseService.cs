@@ -11,17 +11,10 @@ public interface IExpenseService : IGenericService<Expense>
 {
     // Personel işlemleri
     Task<IEnumerable<Expense>> GetExpensesByUserIdAsync(Guid userId);
-    Task<IEnumerable<Expense>> GetFilteredExpensesForUserAsync(
-        Guid userId,
-        ExpenseStatus? status = null,
-        DateTime? fromDate = null,
-        DateTime? toDate = null,
-        decimal? minAmount = null,
-        decimal? maxAmount = null);
     Task<IEnumerable<Expense>> GetActiveExpensesByUserAsync(Guid userId);
     Task<IEnumerable<Expense>> GetExpensesHistoryByUserAsync(Guid userId);
     Task<IEnumerable<Expense>> GetRejectedExpensesWithReasonAsync(Guid userId);
-    Task<bool> TriggerPaymentSimulationAsync(Guid expenseId, Guid userId);  // Onaylanan talepler için ödeme simülasyonu başlatır.
+  /*  Task<bool> TriggerPaymentSimulationAsync(Guid expenseId, Guid userId);  */// Onaylanan talepler için ödeme simülasyonu başlatır.
 
 
     // Admin işlemleri
@@ -33,6 +26,7 @@ public interface IExpenseService : IGenericService<Expense>
         DateTime? toDate = null,
         decimal? minAmount = null,
         decimal? maxAmount = null);
-    Task<Expense> ApproveExpenseAsync(Guid expenseId, Guid adminId);
+    Task<Expense> ApproveExpenseAndPayAsync(Guid expenseId, Guid adminId);
     Task<Expense> RejectExpenseAsync(Guid expenseId, Guid adminId, string rejectionReason);
+    Task<Expense> GetExpenseWithUserAndBankAccountAsync(Guid expenseId);
 }

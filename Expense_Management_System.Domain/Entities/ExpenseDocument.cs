@@ -11,7 +11,8 @@ public class ExpenseDocument : BaseEntity
 {
     public Guid ExpenseId { get; set; }
     public string FilePath { get; set; }
-    public DateTime UploadDate { get; set; }
+    public string FileName { get; set; }
+    public DateTime UploadDate { get; set; } = DateTime.Now;
 
     public Expense Expenses { get; set; }
 }

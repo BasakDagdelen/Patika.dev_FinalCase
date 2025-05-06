@@ -21,53 +21,49 @@ public class PaymentService : GenericService<Payment>, IPaymentService
     }
 
     public async Task<Payment> GetPaymentByExpenseIdAsync(Guid expenseId)
-    {
-        return await _paymentRepository.GetPaymentByExpenseIdAsync(expenseId);
-    }
+          =>  await _paymentRepository.GetPaymentByExpenseIdAsync(expenseId);
+  
 
     public async Task<IEnumerable<Payment>> GetPaymentsByUserIdAsync(Guid userId)
-    {
-        return await _paymentRepository.GetPaymentsByUserAsync(userId);
-    }
+        =>   await _paymentRepository.GetPaymentsByUserAsync(userId);
 
-    public async Task<Payment> ProcessPaymentAsync(Expense expense)
-    {
-        var user = await _userRepository.GetByIdAsync(expense.UserId);
-        if (user is null)
-            throw new Exception("User not found for the expense");
+    //public async Task<Payment> ProcessPaymentAsync(Expense expense)
+    //{
+    //    var user = await _userRepository.GetByIdAsync(expense.UserId);
+    //    if (user is null)
+    //        throw new Exception("User not found for the expense");
 
-        if (expense.Status != ExpenseStatus.Approved)
-            throw new Exception("Only approved expenses can be paid");
+    //    if (expense.Status != ExpenseStatus.Approved)
+    //        throw new Exception("Only approved expenses can be paid");
 
-        var isPaymentSuccessful = SimulateBankTransfer();
-        var payment = new Payment
-        {
-            UserId = user.Id,
-            ExpenseId = expense.Id,
-            Amount = expense.Amount,
-            BankAccountNumber = GenerateFakeBankAccount(user),
-            IsSuccessful = isPaymentSuccessful,
-            FailureReason = isPaymentSuccessful ? null : "Bank payment error",
-            PaymentDate = DateTime.Now,
-            PaymentMethod = PaymentMethod.EFT,
-            TransactionReference = Guid.NewGuid().ToString()
-        };
+    //    var isPaymentSuccessful = true; /*SimulateBankTransfer();*/
+    //    var payment = new Payment
+    //    {
+    //        UserId = user.Id,
+    //        ExpenseId = expense.Id,
+    //        Amount = expense.Amount,
+    //        BankAccountNumber = GenerateFakeBankAccount(user),
+    //        IsSuccessful = isPaymentSuccessful,
+    //        FailureReason = isPaymentSuccessful ? "" : "Bank payment error",
+    //        PaymentDate = DateTime.Now,
+    //        PaymentMethod = PaymentMethod.EFT,
+    //        TransactionReference = Guid.NewGuid().ToString()
+    //    };
 
-        await _paymentRepository.AddAsync(payment);
-        await _unitOfWork.SaveChangesAsync();
+    //    await _paymentRepository.AddAsync(payment);
+    //    await _unitOfWork.SaveChangesAsync();
 
-        return payment;
-    }
+    //    return payment;
+    //}
 
-    private bool SimulateBankTransfer()
-    {
+    //private bool SimulateBankTransfer()
+    //{
+    //    var rnd = new Random();
+    //    return rnd.NextDouble() < 0.9;
+    //}
 
-        var rnd = new Random();
-        return rnd.NextDouble() < 0.9;
-    }
-
-    private string GenerateFakeBankAccount(User user)
-    {
-        return $"TR00{user.Id.ToString("N").Substring(0, 16)}";
-    }
+    //private string GenerateFakeBankAccount(User user)
+    //{
+    //    return $"TR00{user.Id.ToString("N").Substring(0, 16)}";
+    //}
 }

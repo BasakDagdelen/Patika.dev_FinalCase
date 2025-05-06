@@ -2,8 +2,6 @@
 using Expense_Management_System.Application.DTOs.Responses;
 using Expense_Management_System.Application.Interfaces.Services;
 using Expense_Management_System.Domain.Interfaces.Repositories;
-using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Expense_Management_System.WebApi.Controllers;

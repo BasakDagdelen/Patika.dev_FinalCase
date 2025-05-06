@@ -2,6 +2,7 @@
 using Expense_Management_System.Domain.Interfaces.Repositories;
 using Expense_Management_System.Domain.Interfaces.UnitOfWorks;
 using Expense_Management_System.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 
 
 namespace Expense_Management_System.Infrastructure.UnitofWorks;
@@ -55,5 +56,10 @@ public class UnitofWork : IUnitOfWork, IDisposable
                 throw;
             }
         }
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _dbContext.Database.BeginTransactionAsync();
     }
 }

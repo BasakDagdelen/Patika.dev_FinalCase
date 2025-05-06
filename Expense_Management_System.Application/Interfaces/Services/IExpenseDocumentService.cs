@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +13,5 @@ public interface IExpenseDocumentService : IGenericService<ExpenseDocument>
     Task<IEnumerable<ExpenseDocument>> GetDocumentsByExpenseIdAsync(Guid expenseId);
     Task<IEnumerable<ExpenseDocument>> GetDocumentsByUserIdAsync(Guid userId);
     Task<bool> IsDocumentLinkedToApprovedExpenseAsync(Guid documentId);
-
 
 }

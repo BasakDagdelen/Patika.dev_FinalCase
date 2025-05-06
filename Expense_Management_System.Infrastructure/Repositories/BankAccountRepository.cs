@@ -19,7 +19,5 @@ public class BankAccountRepository : GenericRepository<BankAccount>, IBankAccoun
     }
 
     public async Task<BankAccount?> GetByUserIdAsync(Guid userId)
-    {
-        return await _context.BankAccounts.FirstOrDefaultAsync(x => x.UserId == userId && x.IsActive);
-    }
+         =>  await _context.BankAccounts.FirstOrDefaultAsync(x => x.UserId == userId && x.IsActive);
 }

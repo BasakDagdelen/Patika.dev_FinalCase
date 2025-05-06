@@ -2,12 +2,12 @@
 using Expense_Management_System.Application.DTOs.Requests;
 using Expense_Management_System.Application.DTOs.Responses;
 using Expense_Management_System.Application.Interfaces.Services;
+using Expense_Management_System.Application.Services;
 using Expense_Management_System.Domain.Entities;
+using Expense_Management_System.Domain.Interfaces.UnitOfWorks;
 using Expense_Management_System.WebApi.ApiResponses;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Expense_Management_System.WebApi.Controllers;
 
@@ -16,12 +16,16 @@ namespace Expense_Management_System.WebApi.Controllers;
 public class ExpenseController : BaseController
 {
     private readonly IExpenseService _expenseService;
+    private readonly IExpenseDocumentService _expenseDocumentService;
     private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public ExpenseController(IExpenseService expenseService, IMapper mapper)
+    public ExpenseController(IExpenseService expenseService, IMapper mapper, IExpenseDocumentService expenseDocumentService, IUnitOfWork unitOfWork)
     {
         _expenseService = expenseService;
         _mapper = mapper;
+        _expenseDocumentService = expenseDocumentService;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpGet("active")]
@@ -54,32 +58,53 @@ public class ExpenseController : BaseController
         return Success(response);
     }
 
-    [HttpGet("filter")]
-    [Authorize(Roles = "Personnel")]
-    public async Task<ApiResponse<IEnumerable<ExpenseResponse>>> FilterMyExpenses([FromQuery] ExpenseFilterRequest filter)
-    {
-        var userId = CurrentUserId;
-        var expenses = await _expenseService.GetFilteredExpensesForUserAsync(userId, filter.Status, filter.FromDate, filter.ToDate, filter.MinAmount, filter.MaxAmount);
-        var response = _mapper.Map<IEnumerable<ExpenseResponse>>(expenses);
-        return Success(response);
-    }
 
     [HttpPost]
+    [Consumes("multipart/form-data")]
     [Authorize(Roles = "Personnel")]
-    public async Task<ApiResponse<ExpenseResponse>> Create([FromBody] ExpenseRequest request)
+    public async Task<ApiResponse<ExpenseResponse>> Create([FromForm] ExpenseRequest request)
     {
         var userId = CurrentUserId;
 
-        if (request == null || request.Amount <= 0 || request.ExpenseCategoryId == Guid.Empty)
+        if (request is null || request.Amount <= 0 || request.ExpenseCategoryId == Guid.Empty)
             return Fail<ExpenseResponse>("Invalid expense data", 400);
 
         var expense = _mapper.Map<Expense>(request);
         expense.UserId = userId;
+        expense.InsertedDate = DateTime.Now;
+        expense.InsertedUser = "system";
+        expense.IsActive = true;
 
         var created = await _expenseService.AddAsync(expense);
-        var response = _mapper.Map<ExpenseResponse>(created);
 
+        if (request.Documents != null && request.Documents.Any())
+        {
+            foreach (var document in request.Documents)
+            {
+                if (document.Length > 0)
+                {
+                    var fakeFileName = Guid.NewGuid() + Path.GetExtension(document.FileName);
+                    var fakeFilePath = $"/documents/expenses/{created.Id}/{fakeFileName}";
+
+                    var expenseDocument = new ExpenseDocument
+                    {
+                        ExpenseId = created.Id,
+                        FilePath = fakeFilePath,
+                        FileName = document.FileName,
+                        UploadDate = DateTime.Now,
+                        InsertedDate = DateTime.Now,
+                        InsertedUser = userId.ToString(),
+                        IsActive = true
+                    };
+                    await _expenseDocumentService.AddAsync(expenseDocument);
+                }
+            }
+        }
+
+
+        var response = _mapper.Map<ExpenseResponse>(created);
         return Success(response, "Expense was successfully generated.");
+
     }
 
     [HttpGet("pending")]
@@ -96,8 +121,8 @@ public class ExpenseController : BaseController
     public async Task<ApiResponse<ExpenseResponse>> Approve(Guid expenseId)
     {
         var adminId = CurrentUserId;
-        var approved = await _expenseService.ApproveExpenseAsync(expenseId, adminId);
-        var response = _mapper.Map<ExpenseResponse>(approved);
+        var approvedExpense = await _expenseService.ApproveExpenseAndPayAsync(expenseId, adminId);
+        var response = _mapper.Map<ExpenseResponse>(approvedExpense);
         return Success(response, "The expense is confirmed and the payment simulation is started.");
     }
 
@@ -140,17 +165,46 @@ public class ExpenseController : BaseController
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<ApiResponse<ExpenseResponse>> Update(Guid id, [FromBody] ExpenseRequest request)
+    [Consumes("multipart/form-data")]
+    public async Task<ApiResponse<ExpenseResponse>> Update(Guid id, [FromForm] ExpenseRequest request)
     {
         var userId = CurrentUserId;
+
         var existing = await _expenseService.GetByIdAsync(id);
-        if (existing == null || existing.UserId != userId)
-            return Fail<ExpenseResponse>("No charges found or unauthorised access", 403);
+        if (existing is null)
+            return Fail<ExpenseResponse>("Expense document found.");
 
         _mapper.Map(request, existing);
+        existing.UpdatedDate = DateTime.Now;
+        existing.UpdatedUser = userId.ToString();
         await _expenseService.UpdateAsync(id, existing);
 
+        if (request.Documents != null && request.Documents.Any())
+        {
+            foreach (var document in request.Documents)
+            {
+                if (document.Length > 0)
+                {
+                    var fakeFileName = Guid.NewGuid() + Path.GetExtension(document.FileName);
+                    var fakeFilePath = $"/documents/expenses/{id}/{fakeFileName}";
+
+                    var expenseDocument = new ExpenseDocument
+                    {
+                        ExpenseId = id,
+                        FilePath = fakeFilePath,
+                        FileName = document.FileName,
+                        UploadDate = DateTime.Now,
+                        UpdatedUser = userId.ToString(),
+                        UpdatedDate = DateTime.Now,
+                        IsActive = true
+                    };
+                    await _expenseDocumentService.AddAsync(expenseDocument);
+                }
+            }
+        }
         var mappedEntity = _mapper.Map<ExpenseResponse>(existing);
         return Success(mappedEntity, "Expense updated");
+
     }
+
 }

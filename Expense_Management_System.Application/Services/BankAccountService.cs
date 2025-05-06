@@ -21,9 +21,6 @@ public class BankAccountService : GenericService<BankAccount>, IBankAccountServi
     }
 
     public async Task<BankAccount?> GetByUserIdAsync(Guid userId)
-    {
-        return await _bankAccountRepository.GetByUserIdAsync(userId);
-    }
-
+           => await _bankAccountRepository.GetByUserIdAsync(userId);
 
 }

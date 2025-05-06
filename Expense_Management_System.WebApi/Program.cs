@@ -17,12 +17,13 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Expense_Management_System.WebApi.Extensions;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAntiforgery();
 
-// Tüm servis kayýtlarýný tek yerden yönetir
+// TÃ¼m servis kayÄ±tlarÄ±nÄ± tek yerden yÃ¶netir
 builder.Services
     .AddJwtAuthentication(builder.Configuration)
     .AddDatabaseContext(builder.Configuration)
@@ -43,9 +44,26 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer"
+        Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 
@@ -62,9 +80,9 @@ app.UseSerilogRequestLogging();
 
 app.UseAntiforgery();
 
-app.UseAuthentication();
-
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -23,7 +23,7 @@ public class ExpenseCategoryConfiguration : IEntityTypeConfiguration<ExpenseCate
         builder.Property(x => x.IsActive).IsRequired(true).HasDefaultValue(true);
 
         builder.Property(x => x.Name).IsRequired().HasMaxLength(50); ;
-        builder.Property(x => x.Description).IsRequired(false).HasMaxLength(100);
+        builder.Property(x => x.Description).IsRequired(true).HasMaxLength(100);
 
         builder.HasMany(x => x.Expenses)
             .WithOne(x => x.ExpenseCategory)

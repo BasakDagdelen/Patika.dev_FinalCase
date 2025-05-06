@@ -51,7 +51,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 FirstName = "Ahmet",
                 LastName = "Cinar",
                 Email = "ahmet.cinar@company.com",
-                PasswordHash = "$2a$11$5Cm9c0sCwZt5jqAo3AcEYO8vgVfZycgLsPuIsmj6/MuxiNuvzDaI2",  // Admin123!
+                PasswordHash = "$2a$11$5Cm9c0sCwZt5jqAo3AcEYO8vgVfZycgLsPuIsmj6/MuxiNuvzDaI2",  // Admin123! - Adm12.
                 PhoneNumber = "905300000000",
                 WorkPhoneNumber = "02120000000",
                 Address = "Besiktas/Istanbul",

@@ -4,8 +4,8 @@ using Expense_Management_System.Application.DTOs.Responses;
 using Expense_Management_System.Application.Interfaces.Services;
 using Expense_Management_System.Domain.Entities;
 using Expense_Management_System.WebApi.ApiResponses;
+using Expense_Management_System.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -84,6 +84,12 @@ public class PaymentController : BaseController
     public async Task<ApiResponse<PaymentResponse>> Create([FromBody] PaymentRequest paymentRequest)
     {
         var payment = _mapper.Map<Payment>(paymentRequest);
+        payment.TransactionReference = Guid.NewGuid().ToString();
+        payment.PaymentDate = DateTime.Now;
+        payment.InsertedUser = CurrentUserId.ToString();
+        payment.InsertedDate = DateTime.Now;
+        payment.IsActive = true;
+
         var createdPayment = await _paymentService.AddAsync(payment);
 
         var mappedPayment = _mapper.Map<PaymentResponse>(createdPayment);
@@ -105,12 +111,12 @@ public class PaymentController : BaseController
         return Success(mappedPayment, "Payment successfully updated.");
     }
 
-    [Authorize(Roles = "Admin")]
+     [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ApiResponse> Delete(Guid id)
     {
         var payment = await _paymentService.GetByIdAsync(id);
-        if (payment == null)
+        if (payment is null)
             return Fail("Payment not found", 404);
 
         await _paymentService.DeleteAsync(payment.Id);

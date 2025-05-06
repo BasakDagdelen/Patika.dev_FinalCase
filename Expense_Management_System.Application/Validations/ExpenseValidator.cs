@@ -34,25 +34,25 @@ public class ExpenseValidator : AbstractValidator<ExpenseRequest>
         RuleFor(x => x.Documents)
             .NotNull().WithMessage("You must upload at least one document...")
             .Must(docs => docs.Any()).WithMessage("You must upload at least one document...")
-            .Must(docs => docs.Count <= 5).WithMessage("You can upload a maximum of 5 documents...")
-            .Must(AllFilesAreValidTypes).WithMessage("Only JPG and PNG files are allowed...")
-            .Must(AllFilesAreUnderSizeLimit).WithMessage("Each file must be less than 5 MB...");
+            .Must(docs => docs.Count <= 5).WithMessage("You can upload a maximum of 5 documents...");
+            //.Must(AllFilesAreValidTypes).WithMessage("Only JPG and PNG files are allowed...")
+            //.Must(AllFilesAreUnderSizeLimit).WithMessage("Each file must be less than 5 MB...");
 
     }
 
-    private bool AllFilesAreValidTypes(List<ExpenseDocumentRequest> documents)
-    {
-        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-        return documents.All(doc =>
-        {
-            var extension = Path.GetExtension(doc.File.FileName).ToLowerInvariant();
-            return allowedExtensions.Contains(extension);
-        });
-    }
+    //private bool AllFilesAreValidTypes(List<ExpenseDocumentRequest> documents)
+    //{
+    //    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+    //    return documents.All(doc =>
+    //    {
+    //        var extension = Path.GetExtension(doc.File.FileName).ToLowerInvariant();
+    //        return allowedExtensions.Contains(extension);
+    //    });
+    //}
 
-    private bool AllFilesAreUnderSizeLimit(List<ExpenseDocumentRequest> documents)
-    {
-        const long maxFileSizeInBytes = 5 * 1024 * 1024;
-        return documents.All(doc => doc.File.Length <= maxFileSizeInBytes);
-    }
+    //private bool AllFilesAreUnderSizeLimit(List<ExpenseDocumentRequest> documents)
+    //{
+    //    const long maxFileSizeInBytes = 5 * 1024 * 1024;
+    //    return documents.All(doc => doc.File.Length <= maxFileSizeInBytes);
+    //}
 }

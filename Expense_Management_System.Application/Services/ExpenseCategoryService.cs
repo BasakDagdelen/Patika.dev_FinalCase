@@ -20,12 +20,10 @@ public class ExpenseCategoryService : GenericService<ExpenseCategory>, IExpenseC
     }
 
     public async Task<bool> CanDeleteCategoryAsync(Guid id)
-    {
-        return !await _expenseCategoryRepository.HasActiveExpensesAsync(id);
-    }
+       => !await _expenseCategoryRepository.HasActiveExpensesAsync(id);
 
-    public async Task<bool> IsCategoryNameExistsAsync(string name, Guid? excludeId = null)
-    {
-        return await _expenseCategoryRepository.IsCategoryNameUniqueAsync(name, excludeId);
-    }
+
+    public async Task<bool> IsCategoryNameExistsAsync(string name)
+        => await _expenseCategoryRepository.IsCategoryNameUniqueAsync(name);
+
 }

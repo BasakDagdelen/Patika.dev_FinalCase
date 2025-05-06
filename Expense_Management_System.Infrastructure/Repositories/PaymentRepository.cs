@@ -13,17 +13,13 @@ public class PaymentRepository : GenericRepository<Payment>, IPaymentRepository
     }
 
     public async Task<Payment> GetPaymentByExpenseIdAsync(Guid expenseId)
-    {
-        var payment = await _context.Payments.Where(p => p.ExpenseId == expenseId && p.IsActive).FirstOrDefaultAsync();
-        if (payment is null)
-            throw new Exception($"No payment found for expense with ID: {expenseId}");
-        return payment;
-    }
+        => await _context.Payments
+        .Where(p => p.ExpenseId == expenseId && p.IsActive)
+        .FirstOrDefaultAsync();
 
     public async Task<IEnumerable<Payment>> GetPaymentsByUserAsync(Guid userId)
-    {
-        return await _context.Payments.Where(p => p.Expense.UserId == userId && p.IsActive).OrderByDescending(p => p.PaymentDate).ToListAsync();
-    }
-
-
+        => await _context.Payments
+        .Where(p => p.Expense.UserId == userId && p.IsActive)
+        .OrderByDescending(p => p.PaymentDate)
+        .ToListAsync();
 }

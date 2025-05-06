@@ -19,5 +19,6 @@ public class ExpenseRequest: BaseRequest
     public string PaymentLocation { get; set; }
     public string? Description { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
-    public List<ExpenseDocumentRequest> Documents { get; set; } = new();
+    public List<IFormFile> Documents { get; set; }
+    //public List<ExpenseDocumentRequest> Documents { get; set; } = new();
 }

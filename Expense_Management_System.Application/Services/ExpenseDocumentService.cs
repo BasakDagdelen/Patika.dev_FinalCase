@@ -3,6 +3,7 @@ using Expense_Management_System.Domain.Entities;
 using Expense_Management_System.Domain.Enums;
 using Expense_Management_System.Domain.Interfaces.Repositories;
 using Expense_Management_System.Domain.Interfaces.UnitOfWorks;
+using System.Linq.Expressions;
 
 namespace Expense_Management_System.Application.Services;
 
@@ -17,25 +18,24 @@ public class ExpenseDocumentService : GenericService<ExpenseDocument>, IExpenseD
     }
 
     public async Task<IEnumerable<ExpenseDocument>> GetDocumentsByExpenseIdAsync(Guid expenseId)
-    {
-        return await _expenseDocumentRepository.WhereAsync(e => e.ExpenseId == expenseId);
-    }
+          =>  await _expenseDocumentRepository.WhereWithExpenseAsync(e => e.ExpenseId == expenseId);
+
 
     public async Task<IEnumerable<ExpenseDocument>> GetDocumentsByUserIdAsync(Guid userId)
-    {
-        return await _expenseDocumentRepository.WhereAsync(e => e.Expenses.UserId == userId);
-    }
+          => await _expenseDocumentRepository.WhereWithExpenseAsync(e => e.Expenses.UserId == userId);
+ 
 
     public async Task<bool> IsDocumentLinkedToApprovedExpenseAsync(Guid documentId)
     {
         var document = await _expenseDocumentRepository.GetByIdAsync(documentId);
-        if (document == null)
+        if (document is null)
             return false;
 
         var expense = await _expenseDocumentRepository.GetByIdAsync(document.ExpenseId);
-        if (expense == null || expense.Expenses.Status != ExpenseStatus.Approved)
+        if (expense is null || expense.Expenses.Status != ExpenseStatus.Approved)
             return false;
 
         return true;
     }
+
 }

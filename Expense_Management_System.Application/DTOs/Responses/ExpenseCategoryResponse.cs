@@ -10,5 +10,5 @@ namespace Expense_Management_System.Application.DTOs.Responses;
 public class ExpenseCategoryResponse: BaseResponse
 {
     public string Name { get; set; }
-    public string? Description { get; set; }
+    public string Description { get; set; }
 }

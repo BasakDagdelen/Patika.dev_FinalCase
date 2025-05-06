@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Expense_Management_System.Application.DTOs.Requests;
 using Expense_Management_System.Application.DTOs.Responses;
 using Expense_Management_System.Application.Interfaces.Services;
-using Expense_Management_System.Application.Services;
 using Expense_Management_System.Domain.Entities;
 using Expense_Management_System.Domain.Enums;
 using Expense_Management_System.WebApi.ApiResponses;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Expense_Management_System.WebApi.Controllers;
@@ -38,12 +37,19 @@ public class UserController : BaseController
     [HttpGet("{id}")]
     public async Task<ApiResponse<UserResponse>> GetById(Guid id)
     {
-        var entity = await _userService.GetByIdAsync(id);
-        if (entity is null)
-            return Fail<UserResponse>("User not found", 404);
+        try
+        {
+            var entity = await _userService.GetByIdAsync(id);
+            if (entity is null)
+                return Fail<UserResponse>("User not found", 404);
 
-        var mappedEntity = _mapper.Map<UserResponse>(entity);
-        return Success(mappedEntity);
+            var mappedEntity = _mapper.Map<UserResponse>(entity);
+            return Success(mappedEntity);
+        }
+        catch
+        {
+            return Fail<UserResponse>("User not found", 404);
+        }
     }
 
     [Authorize(Roles = "Admin")]
@@ -51,9 +57,6 @@ public class UserController : BaseController
     public async Task<ApiResponse<UserResponse>> GetByEmail(string email)
     {
         var user = await _userService.GetUserByEmailAsync(email);
-        if (user is null)
-            return Fail<UserResponse>("User not found", 404);
-
         var mappedUser = _mapper.Map<UserResponse>(user);
         return Success(mappedUser);
     }
@@ -71,12 +74,11 @@ public class UserController : BaseController
     [HttpPost]
     public async Task<ApiResponse<UserResponse>> Create([FromBody] UserRequest userRequest)
     {
-
         if (await _userService.CheckUserExistsAsync(userRequest.Email))
             return Fail<UserResponse>("User with this email already exists", 400);
 
         var entity = _mapper.Map<User>(userRequest);
-        var createdEntity = await _userService.AddAsync(entity);
+        var createdEntity = await _userService.CreateUserAsync(userRequest);
         var mappedEntity = _mapper.Map<UserResponse>(createdEntity);
         return Success(mappedEntity, "User successfully created.");
     }
@@ -86,16 +88,29 @@ public class UserController : BaseController
     public async Task<ApiResponse<UserResponse>> Update(Guid id, [FromBody] UserRequest userRequest)
     {
         var entity = await _userService.GetByIdAsync(id);
-        if (entity is null)
-            return Fail<UserResponse>("User not found", 404);
 
         if (await _userService.CheckUserExistsAsync(userRequest.Email) && entity.Email != userRequest.Email)
             return Fail<UserResponse>("Email already exists", 400);
 
-        var updatedEntity = _mapper.Map(userRequest, entity);
-        await _userService.UpdateAsync(id, updatedEntity);
-        var mappedEntity = _mapper.Map<UserResponse>(updatedEntity);
+        if (!string.IsNullOrEmpty(userRequest.Password))
+        {
+            entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userRequest.Password); 
+        }
+
+        _mapper.Map(userRequest, entity);
+        entity.UpdatedDate = DateTime.Now;
+        entity.UpdatedUser = CurrentUserId.ToString();
+
+        if (entity.BankAccount != null)
+        {
+            entity.BankAccount.UpdatedDate = DateTime.Now;
+            entity.BankAccount.UpdatedUser = CurrentUserId.ToString();
+        }
+
+        await _userService.UpdateAsync(id, entity);
+        var mappedEntity = _mapper.Map<UserResponse>(entity);
         return Success(mappedEntity, "User successfully updated.");
+
     }
 
     [Authorize(Roles = "Admin")]
@@ -103,9 +118,8 @@ public class UserController : BaseController
     public async Task<ApiResponse> ChangeRole(Guid id, [FromBody] UserRole newRole)
     {
         var entity = await _userService.GetByIdAsync(id);
-        if (entity is null)
-            return Fail("User not found", 404);
-
+        entity.UpdatedDate = DateTime.Now;
+        entity.UpdatedUser = CurrentUserId.ToString(); 
         await _userService.ChangeUserRoleAsync(id, newRole);
         return Success("User role successfully updated.");
     }
@@ -115,7 +129,7 @@ public class UserController : BaseController
     public async Task<ApiResponse> Delete(Guid id)
     {
         var entity = await _userService.GetByIdAsync(id);
-        if (entity is null)
+        if (entity is null || !entity.IsActive)
             return Fail("User not found", 404);
 
         await _userService.DeleteAsync(entity.Id);
@@ -127,11 +141,7 @@ public class UserController : BaseController
     public async Task<ApiResponse<IEnumerable<ExpenseResponse>>> GetUserExpenses(Guid id)
     {
         var entity = await _userService.GetUserByIdWithExpensesAsync(id);
-        if (entity is null)
-            return Fail<IEnumerable<ExpenseResponse>>("User not found", 404);
-
         var mappedExpenses = _mapper.Map<IEnumerable<ExpenseResponse>>(entity.Expenses);
         return Success(mappedExpenses);
     }
 }
-

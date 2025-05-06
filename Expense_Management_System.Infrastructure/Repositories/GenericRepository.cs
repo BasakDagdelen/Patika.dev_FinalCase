@@ -29,37 +29,34 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     }
 
     public async Task AddRangeAsync(IEnumerable<TEntity> entities)
-    {
-        await _dbSet.AddRangeAsync(entities);
-    }
+       => await _dbSet.AddRangeAsync(entities);
 
     public async Task DeleteAsync(TEntity entity)
     {
         _dbSet.Attach(entity);
         _context.Entry(entity).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
     }
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
-    {
-        return await _dbSet.ToListAsync();
-    }
+       => await _dbSet.ToListAsync();
 
     public async Task<TEntity> GetByIdAsync(Guid id)
-    {
-        return await _dbSet.FindAsync(id);
-    }
+        => await _dbSet.FindAsync(id);
 
     public async Task UpdateAsync(TEntity entity)
     {
-        _dbSet.Attach(entity);
-        _context.Entry(entity).State = EntityState.Modified;
+        var existingEntity = await _dbSet.FindAsync(entity.Id);
+        if (existingEntity is null)
+            throw new DbUpdateException($"Entity with id {entity.Id} not found.");
+        _context.Entry(existingEntity).CurrentValues.SetValues(entity);
+
+        // 3. Sadece değişen alanları güncelle
+        _context.Entry(existingEntity).Property(x => x.UpdatedDate).IsModified = true;
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<TEntity>> WhereAsync(Expression<Func<TEntity, bool>> expression) 
-    { 
-        return await _dbSet.Where(expression).ToListAsync(); 
-    }
+    public async Task<IEnumerable<TEntity>> WhereAsync(Expression<Func<TEntity, bool>> expression)
+       => await _dbSet.Where(expression).ToListAsync();
+
 
 }

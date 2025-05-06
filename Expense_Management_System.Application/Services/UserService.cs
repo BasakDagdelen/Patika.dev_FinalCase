@@ -26,11 +26,10 @@ public class UserService : GenericService<User>, IUserService
     }
 
     public async Task<bool> CheckUserExistsAsync(string email)
-    {
-        return await _userRepository.UserExistsAsync(email);
-    }
+         => await _userRepository.UserExistsAsync(email);
+   
 
-    public async Task<User> CreateUserAsync(RegisterRequest request)
+    public async Task<User> CreateUserAsync(UserRequest request) 
     {
         var userExists = await _userRepository.GetByEmailAsync(request.Email);
         if (userExists != null)
@@ -46,17 +45,18 @@ public class UserService : GenericService<User>, IUserService
             PhoneNumber = request.PhoneNumber,
             WorkPhoneNumber = request.WorkPhoneNumber,
             Address = request.Address,
-            //IBAN = request.IBAN,
-            //BankAccountNumber = request.BankAccountNumber,
             BankAccount = new BankAccount
             {
                 IBAN = request.IBAN,
-                AccountNumber = request.BankAccountNumber,
+                AccountNumber = request.AccountNumber,
                 InsertedUser = "system",
                 InsertedDate = DateTime.Now,
                 IsActive = true
             },
-            Role = UserRole.Personnel
+            Role = UserRole.Personnel,
+            InsertedDate = DateTime.Now,
+            InsertedUser = "system",
+            IsActive = true
         };
 
         await _userRepository.AddAsync(user);
@@ -64,18 +64,15 @@ public class UserService : GenericService<User>, IUserService
         return user;
     }
 
-    public async Task<User?> GetUserByEmailAsync(string email)
-    {
-        return await _userRepository.GetByEmailAsync(email);
-    }
+    public async Task<User?> GetUserByEmailAsync(string email)  
+            => await _userRepository.GetByEmailAsync(email);
+    
 
     public async Task<User?> GetUserByIdWithExpensesAsync(Guid userId)
-    {
-        return await _userRepository.GetByIdWithExpensesAsync(userId);
-    }
+            => await _userRepository.GetByIdWithExpensesAsync(userId);
+    
 
     public async Task<IEnumerable<User>> GetUsersByRoleAsync(UserRole role)
-    {
-        return await _userRepository.GetAllByRoleAsync(role);
-    }
+         => await _userRepository.GetAllByRoleAsync(role);
+
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Expense_Management_System.Application.Validation;
 
-public class ExpenseCategoryValidator: AbstractValidator<ExpenseCategoryRequest>
+public class ExpenseCategoryValidator : AbstractValidator<ExpenseCategoryRequest>
 {
     public ExpenseCategoryValidator()
     {
@@ -16,8 +16,8 @@ public class ExpenseCategoryValidator: AbstractValidator<ExpenseCategoryRequest>
             .NotEmpty().WithMessage("Category name is required...")
             .MaximumLength(50).WithMessage("Category name must contain a maximum of 50 characters...");
 
-        When(x => string.IsNullOrEmpty(x.Description),
-            () => RuleFor(x => x.Description)
-            .MinimumLength(2).WithMessage("Description must contain at least 2 characters..."));
+        RuleFor(x => x.Description)
+             .NotEmpty().WithMessage("Description is required...")
+             .MinimumLength(2).WithMessage("Description must contain at least 2 characters...");
     }
 }

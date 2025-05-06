@@ -11,5 +11,5 @@ public class ExpenseDocumentResponse: BaseResponse
 {
     public Guid ExpenseClaimId { get; set; }
     public string FilePath { get; set; }
-    public DateTime UploadDate { get; set; } = DateTime.Now;
+    public DateTime UploadDate { get; set; }
 }

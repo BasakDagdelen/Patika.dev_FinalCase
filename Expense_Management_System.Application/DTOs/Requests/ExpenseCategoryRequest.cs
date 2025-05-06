@@ -11,5 +11,5 @@ namespace Expense_Management_System.Application.DTOs.Requests;
 public class ExpenseCategoryRequest: BaseRequest
 {
     public string Name { get; set; }
-    public string? Description { get; set; }
+    public string Description { get; set; }
 }

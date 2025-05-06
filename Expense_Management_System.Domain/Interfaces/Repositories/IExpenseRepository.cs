@@ -9,6 +9,7 @@ public interface IExpenseRepository:IGenericRepository<Expense>
     Task<IEnumerable<Expense>> GetExpensesByCategoryAsync(Guid categoryId);
     Task<IEnumerable<Expense>> GetExpenseHistoryAsync(Guid userId);
     Task<IEnumerable<Expense>> GetExpensesByStatusAsync(ExpenseStatus status);
+    Task<Expense> GetExpenseWithUserAndBankAccountAsync(Guid expenseId);
 
     //Task<IEnumerable<Expense>> FilterExpensesAsync(
     //Guid? userId = null,

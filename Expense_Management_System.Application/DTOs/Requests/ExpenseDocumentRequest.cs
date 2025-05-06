@@ -12,5 +12,5 @@ namespace Expense_Management_System.Application.DTOs.Requests;
 
 public class ExpenseDocumentRequest : BaseRequest
 {
-    public IFormFile File { get; set; }
+    public List<IFormFile> File { get; set; }
 }
