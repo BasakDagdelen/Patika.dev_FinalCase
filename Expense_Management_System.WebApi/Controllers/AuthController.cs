@@ -14,11 +14,13 @@ public class AuthController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly IConfiguration _configuration;
 
-    public AuthController(IUserRepository userRepository, IJwtTokenService jwtTokenService)
+    public AuthController(IUserRepository userRepository, IJwtTokenService jwtTokenService, IConfiguration configuration)
     {
         _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
+        _configuration = configuration;
     }
 
     [HttpPost("login")]
@@ -33,7 +35,8 @@ public class AuthController : ControllerBase
         {
             Token = token,
             FullName = $"{user.FirstName} {user.LastName}",
-            Role = user.Role.ToString()
+            Role = user.Role.ToString(),
+            ExpireAt = DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("JwtSettings:ExpireMinutes"))
         };
         return Ok(response);
     }

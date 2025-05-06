@@ -115,7 +115,7 @@ public class UserController : BaseController
     public async Task<ApiResponse> Delete(Guid id)
     {
         var entity = await _userService.GetByIdAsync(id);
-        if (entity == null)
+        if (entity is null)
             return Fail("User not found", 404);
 
         await _userService.DeleteAsync(entity.Id);
@@ -127,7 +127,7 @@ public class UserController : BaseController
     public async Task<ApiResponse<IEnumerable<ExpenseResponse>>> GetUserExpenses(Guid id)
     {
         var entity = await _userService.GetUserByIdWithExpensesAsync(id);
-        if (entity == null)
+        if (entity is null)
             return Fail<IEnumerable<ExpenseResponse>>("User not found", 404);
 
         var mappedExpenses = _mapper.Map<IEnumerable<ExpenseResponse>>(entity.Expenses);

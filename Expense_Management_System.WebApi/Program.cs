@@ -14,55 +14,40 @@ using Expense_Management_System.Infrastructure.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using Expense_Management_System.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAntiforgery();
 
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+// Tüm servis kayýtlarýný tek yerden yönetir
+builder.Services
+    .AddJwtAuthentication(builder.Configuration)
+    .AddDatabaseContext(builder.Configuration)
+    .AddValidationAndMapping()
+    .AddRepositoriesAndServices()
+    .AddMapperConfiguration();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-});
 
-builder.Services.AddAuthorization();
+Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Configuration)
+            .CreateLogger();
 
-builder.Services.AddControllers().AddFluentValidation(x =>
-{
-    x.RegisterValidatorsFromAssemblyContaining<UserValidator>();
-});
+builder.Host.UseSerilog();
 
-builder.Services.AddDbContext<ApplicationDbContext>(config =>
-{
-    config.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"),
-                        x => x.MigrationsAssembly("Expense_Management_System.Infrastructure"));
-});
-
-builder.Services.AddSingleton(new MapperConfiguration(x => x.AddProfile(new MappingConfig())).CreateMapper());
-
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
-builder.Services.AddScoped<IUnitOfWork, UnitofWork>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
+    });
+});
 
 
 var app = builder.Build();
@@ -72,6 +57,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseAntiforgery();
 
