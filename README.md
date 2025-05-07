@@ -100,7 +100,6 @@ Tüm controller'lar REST mimarisine uygun olarak GET, GET by ID, POST, PUT ve DE
 | HTTP | Endpoint             | Açıklama |
 | ---- | -------------------- | -------- |
 | POST | `/api/Auth/login`    | Giriş    |
-| POST | `/api/Auth/register` | Kayıt    |
 
 ### 📟 ExpenseController
 
