@@ -8,88 +8,182 @@ Bu proje, saha personelinin masraf taleplerini girebildiği, yöneticilerin ise 
 
 ---
 
-## ⚙️ Kullanılan Teknolojiler
+## 🚀 Proje Kurulumu ve Çalıştırma
 
-| Teknoloji | Açıklama |
-|----------|----------|
-| .NET 8 / ASP.NET Core Web API | Ana API katmanı |
-| Entity Framework Core | ORM ve veri işlemleri |
-| SQL Server | Veritabanı |
-| JWT (JSON Web Tokens) | Kimlik doğrulama ve yetkilendirme |
-| AutoMapper | DTO ve Entity dönüşümleri |
-| Swagger | API dokümantasyonu ve test |
-| Clean Architecture | Katmanlı mimari |
-| Repository & Unit of Work | Veri erişim desenleri |
-| FluentValidation | Veri doğrulama işlemleri |
+### 📦 1. Projeyi Klonla
 
----
+```bash
+git clone https://github.com/kullanici-adi/Expense-Management-System.git
+cd Expense-Management-System
+```
 
-## 🧱 Katmanlar (Clean Architecture)
+### 🧰 2. Gereksinimler
 
-![image](https://github.com/user-attachments/assets/b0596b12-0b73-48e2-928f-cfbcb1acc5e7)
+* [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download)
+* [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+* [Visual Studio 2022+](https://visualstudio.microsoft.com/) veya [VS Code](https://code.visualstudio.com/)
+* [Postman](https://www.postman.com/) (isteğe bağlı)
 
 ---
 
-## 🔄 Uygulama Akışı
+## ⚙️ 3. Yapılandırma
 
-1. Kullanıcı sisteme kayıt olur veya giriş yapar (JWT Token alır).
-2. Rolü `Personel` olan kullanıcı, masraf talebi oluşturur.
-3. `Admin` rolü, tüm talepleri görür ve onaylama/reddetme işlemleri yapar.
-4. Onaylanan talepler ödeme işlemine alınır (banka simülasyonu).
-5. Kullanıcı masraf ve ödeme geçmişini görebilir.
+### 🔌 Veritabanı Ayarı
 
----
+`appsettings.json` ya da `appsettings.Development.json` içinde `ConnectionStrings` alanını düzenle:
 
-## 📮 API Endpoint Listesi (Genel)
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=.;Database=ExpenseDb;Trusted_Connection=True;TrustServerCertificate=True;"
+}
+```
 
-> Aşağıdaki endpoint'ler Swagger UI üzerinden test edilebilir.
+Alternatif olarak:
 
----
+```json
+"Server=localhost;Database=ExpenseDb;User Id=sa;Password=yourPassword;"
+```
 
-## 🧱 BaseController
+### 🔐 JWT Ayarları
 
-Tüm controller'ların kalıtım aldığı temel sınıftır. Ortak işlemleri ve kullanıcı bilgilerine erişimi sağlar.
+```json
+"JwtSettings": {
+  "SecretKey": "your-super-secret-key",
+  "Issuer": "ExpenseApp",
+  "Audience": "ExpenseUsers",
+  "AccessTokenExpirationMinutes": 60
+}
+```
 
-### Özellikler
+### 🏠 Veritabanı Kurulumu
 
-- `CurrentUserId`: JWT Token içerisinden kullanıcı ID'sini alır.
-- `CurrentUserRole`: JWT Token içerisinden kullanıcı rolünü alır.
-- `Success<T>(data, message)`: Başarılı durumlar için `ApiResponse<T>` döner.
-- `Fail<T>(message, statusCode)`: Hatalı durumlar için `ApiResponse<T>` döner.
+EF Core Migration kullanıyorsan:
 
----
+```bash
+dotnet ef database update
+```
 
-### 👤 Auth
-- `POST /api/Auth/Login` – JWT Token al
-
-### 👥 Users
-- `GET /api/Users` – Tüm kullanıcıları listele (Admin)
-- `GET /api/Users/{id}` – Kullancıı detaylarını getir
-- `POST /api/Users` – Yeni kullanıcı oluştur
-- `PUT /api/Users/{id}` – Kullanıcı güncelle
-- `DELETE /api/Users/{id}` – Kullanıcı sil
-
-### 💸 Expenses
-- `GET /api/Expenses` – Tüm masrafları listele
-- `GET /api/Expenses/{id}` – Masraf detayı getir
-- `POST /api/Expenses` – Masraf talebi oluştur (Personel)
-- `PUT /api/Expenses/{id}` – Masraf talebini güncelle
-- `DELETE /api/Expenses/{id}` – Masraf talebini sil
-- `GET /api/Expenses/active` – Kullanıcının aktif masrafları
-- `GET /api/Expenses/history` – Kullanıcının geçmiş masrafları
-- `PUT /api/Expenses/approve/{id}` – Talebi onayla (Admin)
-- `PUT /api/Expenses/reject/{id}` – Talebi reddet (Admin)
-
-### 🏦 Payments
-- `GET /api/Payments` – Tüm ödeme geçmişi
-- `GET /api/Payments/{id}` – Belirli ödeme detayları
-- `POST /api/Payments/simulate/{expenseId}` – Ödeme simülasyonu başlat (Admin)
-- `DELETE /api/Payments/{id}` – Ödemeyi sil
-
+EF Core migration yoksa, `Database/Script.sql` dosyasını çalıştırarak manuel olarak veritabanını oluşturabilirsin.
 
 ---
 
+## ▶️ Uygulamayı Başlat
 
+```bash
+dotnet run --project ExpenseManagement.Api
+```
+
+Ardından API Swagger arayüzünü ziyaret et:
+
+```
+https://localhost:5001/swagger
+```
+
+---
+
+## 👤 Varsayılan Admin Kullanıcı
+
+| Alan  | Değer                                         |
+| ----- | --------------------------------------------- |
+| Email | [admin@example.com](mailto:admin@example.com) |
+| Şifre | Admin123\*                                    |
+
+> İlk kullanıcıyı manuel olarak veritabanına eklemen gerekebilir 
+---
+
+## 🧰 API Endpoint Listesi
+
+Tüm controller'lar REST mimarisine uygun olarak GET, GET by ID, POST, PUT ve DELETE işlemlerini destekler.
+
+### 🔐 AuthController
+
+| HTTP | Endpoint             | Açıklama |
+| ---- | -------------------- | -------- |
+| POST | `/api/Auth/login`    | Giriş    |
+| POST | `/api/Auth/register` | Kayıt    |
+
+### 📟 ExpenseController
+
+| HTTP   | Endpoint            | Açıklama                        |
+| ------ | ------------------- | ------------------------------- |
+| GET    | `/api/Expense`      | Tüm masrafları getir (Personel) |
+| GET    | `/api/Expense/{id}` | Belirli masrafı getir           |
+| POST   | `/api/Expense`      | Yeni masraf oluştur             |
+| PUT    | `/api/Expense/{id}` | Masraf güncelle                 |
+| DELETE | `/api/Expense/{id}` | Masraf sil                      |
+
+### 📂 ExpenseCategoryController
+
+| HTTP   | Endpoint                    | Açıklama                      |
+| ------ | --------------------------- | ----------------------------- |
+| GET    | `/api/ExpenseCategory`      | Tüm kategorileri getir        |
+| GET    | `/api/ExpenseCategory/{id}` | Kategori detayını getir       |
+| POST   | `/api/ExpenseCategory`      | Yeni kategori oluştur (Admin) |
+| PUT    | `/api/ExpenseCategory/{id}` | Kategori güncelle (Admin)     |
+| DELETE | `/api/ExpenseCategory/{id}` | Kategori sil (Admin)          |
+
+### 💳 PaymentController
+
+| HTTP | Endpoint            | Açıklama                      |
+| ---- | ------------------- | ----------------------------- |
+| GET  | `/api/Payment`      | Ödeme geçmişini getir (Admin) |
+| GET  | `/api/Payment/{id}` | Belirli ödeme detayını getir  |
+| POST | `/api/Payment/pay`  | Ödeme yap (Admin)             |
+
+### 🏦 BankAccountController
+
+| HTTP   | Endpoint                | Açıklama                            |
+| ------ | ----------------------- | ----------------------------------- |
+| GET    | `/api/BankAccount`      | Kullanıcının banka hesabını getirir |
+| POST   | `/api/BankAccount`      | Yeni banka hesabı oluşturur         |
+| PUT    | `/api/BankAccount/{id}` | Hesap bilgilerini günceller         |
+| DELETE | `/api/BankAccount/{id}` | Hesabı siler                        |
+
+---
+
+## 🧱 Mimari Yapı
+
+Bu proje **Clean Architecture** prensiplerine göre geliştirilmiştir.
+
+### 📁 Katmanlar
+
+| Katman           | Açıklama                                |
+| ---------------- | --------------------------------------- |
+| `Api`            | API controller’lar                      |
+| `Application`    | DTO, servis, business kurallar          |
+| `Domain`         | Entity tanımları, arayüzler             |
+| `Infrastructure` | Jwt konfigürasyonu, yardımcı servisler  |
+| `Persistence`    | EF Core, Dapper, Repository, UnitOfWork |
+
+---
+
+## 🔒 Yetkilendirme
+
+* JWT ile kimlik doğrulama yapılır.
+* `[Authorize]` ve `[Authorize(Roles = "Admin")]` gibi attribute’lar kullanılır.
+* Personel sadece kendi masraflarını görebilir.
+* Admin tüm kayıtları yönetebilir, onaylama ve ödeme işlemlerini gerçekleştirir.
+
+---
+
+## 📌 Ekstra Özellikler
+
+* Generic Repository & Unit of Work Pattern
+* DTO – Entity Mapping (AutoMapper)
+* Exception Handling ve Custom Response Format (ApiResponse)
+* Swagger ile dokümantasyon ve test
+
+---
+
+## 🤝 Katkıda Bulunmak
+
+Pull request’ler ve issue’lar her zaman memnuniyetle karşılanır!
+
+---
+
+## 🖲 Lisans
+
+Bu proje MIT lisansı ile lisanslanmıştır.
 
 
 
