@@ -186,4 +186,10 @@ Pull request’ler ve issue’lar her zaman memnuniyetle karşılanır!
 Bu proje MIT lisansı ile lisanslanmıştır.
 
 
+![Ekran görüntüsü 2025-05-07 044728](https://github.com/user-attachments/assets/b9bc1007-43f1-482d-ba52-19da466cec1b)
+
+![Ekran görüntüsü 2025-05-07 045703](https://github.com/user-attachments/assets/b1de4351-45fa-48a8-9091-febc1fb4dc1a)
+
+
+
 
